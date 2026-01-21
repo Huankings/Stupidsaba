@@ -66,7 +66,7 @@ public class RevivalSelectionHandler {
             roles.remove(SERoles.NECROMANCER);
             roles.removeIf(role -> Harpymodloader.VANNILA_ROLES.contains(role)
                     || !role.canUseKiller()
-                    || HarpyModLoaderConfig.HANDLER.instance().disabled.contains(role.identifier().getPath()));
+                    || HarpyModLoaderConfig.HANDLER.instance().disabled.contains(role.identifier().toString()));
             if (roles.isEmpty()) roles.add(WatheRoles.KILLER);
             Collections.shuffle(roles);
 
