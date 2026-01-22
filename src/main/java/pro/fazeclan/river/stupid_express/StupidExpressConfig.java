@@ -59,6 +59,7 @@ public class StupidExpressConfig extends Config {
             public boolean loversKnowImmediately = true;
             public boolean loversWinWithKillers = false;
             public boolean loversWinWithCivilians = true;
+            public boolean loversGlowToEachother = false;
         }
 
     }

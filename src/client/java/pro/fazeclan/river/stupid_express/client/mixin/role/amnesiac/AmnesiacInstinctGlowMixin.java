@@ -36,6 +36,9 @@ public class AmnesiacInstinctGlowMixin {
         if (!WatheClient.isInstinctEnabled()) {
             return;
         }
+        if (!gameWorldComponent.canUseKillerFeatures(player)) {
+            return;
+        }
         cir.setReturnValue(SERoles.AMNESIAC.color());
     }
 

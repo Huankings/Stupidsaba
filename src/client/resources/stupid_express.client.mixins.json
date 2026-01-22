@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "modifier.lovers.LoversHudMixin",
+    "modifier.lovers.LoversInstinctMixin",
     "role.CustomWinnerAnnouncementMixin",
     "role.CustomWinnerTextRendering",
     "role.amnesiac.AmnesiacHudMixin",
