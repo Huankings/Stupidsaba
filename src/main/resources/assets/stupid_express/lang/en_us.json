@@ -65,5 +65,7 @@
   "stupid_express.config.modifiersSection.loversSection.loversWinWithKillers": "Lovers Win Alongside Killers",
   "stupid_express.config.modifiersSection.loversSection.loversWinWithKillers.desc": "If one of the Lovers is a killer and this is true, the lovers win alongside killers.",
   "stupid_express.config.modifiersSection.loversSection.loversWinWithCivilians": "Lovers Win Alongside Civilians",
-  "stupid_express.config.modifiersSection.loversSection.loversWinWithCivilians.desc": "If both of the Lovers is a civilian and this is true, the lovers win alongside civilians. Otherwise, they will need to be eliminated for the game to end."
+  "stupid_express.config.modifiersSection.loversSection.loversWinWithCivilians.desc": "If both of the Lovers is a civilian and this is true, the lovers win alongside civilians. Otherwise, they will need to be eliminated for the game to end.",
+  "stupid_express.config.modifiersSection.loversSection.loversGlowToEachother": "Lovers Glow to Eachother",
+  "stupid_express.config.modifiersSection.loversSection.loversGlowToEachother.desc": "Lovers can see the other lover glow."
 }
