@@ -4,8 +4,7 @@
   "package": "pro.fazeclan.river.stupid_express.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "modifier.lovers.LoversDeathMixin",
-    "modifier.lovers.LoversWinConditionMixin",
+    "modifier.lovers.LoversLoopMixin",
     "role.CustomWinnerCheckMixin",
     "role.CustomWinnerResetMixin",
     "role.arsonist.ArsonistKeepAliveMixin",

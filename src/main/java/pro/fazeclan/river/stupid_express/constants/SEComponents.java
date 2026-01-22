@@ -8,7 +8,6 @@ import org.ladysnake.cca.api.v3.world.WorldComponentFactoryRegistry;
 import org.ladysnake.cca.api.v3.world.WorldComponentInitializer;
 import pro.fazeclan.river.stupid_express.cca.AbilityCooldownComponent;
 import pro.fazeclan.river.stupid_express.cca.CustomWinnerComponent;
-import pro.fazeclan.river.stupid_express.modifier.lovers.cca.LoversComponent;
 import pro.fazeclan.river.stupid_express.role.arsonist.cca.DousedPlayerComponent;
 import pro.fazeclan.river.stupid_express.role.necromancer.cca.NecromancerComponent;
 
@@ -24,9 +23,6 @@ public class SEComponents implements EntityComponentInitializer, WorldComponentI
         registry.beginRegistration(Player.class, AbilityCooldownComponent.KEY)
                 .respawnStrategy(RespawnCopyStrategy.NEVER_COPY)
                 .end(AbilityCooldownComponent::new);
-        registry.beginRegistration(Player.class, LoversComponent.KEY)
-                .respawnStrategy(RespawnCopyStrategy.NEVER_COPY)
-                .end(LoversComponent::new);
     }
 
     @Override

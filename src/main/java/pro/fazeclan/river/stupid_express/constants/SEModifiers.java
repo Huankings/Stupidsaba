@@ -7,11 +7,9 @@ import net.minecraft.server.level.ServerPlayer;
 import org.agmas.harpymodloader.Harpymodloader;
 import org.agmas.harpymodloader.component.WorldModifierComponent;
 import org.agmas.harpymodloader.events.ModifierAssigned;
-import org.agmas.harpymodloader.events.ResetPlayerEvent;
 import org.agmas.harpymodloader.modifiers.HMLModifiers;
 import org.agmas.harpymodloader.modifiers.Modifier;
 import pro.fazeclan.river.stupid_express.StupidExpress;
-import pro.fazeclan.river.stupid_express.modifier.lovers.cca.LoversComponent;
 
 public class SEModifiers {
 
@@ -56,25 +54,9 @@ public class SEModifiers {
                     || gameWorldComponent.isRole(loverTwo, WatheRoles.VIGILANTE) || lover.equals(loverTwo));
 
             // assign both lovers
-            var loverComponentOne = LoversComponent.KEY.get(lover);
-
-            loverComponentOne.setLover(loverTwo.getUUID());
-            loverComponentOne.sync();
-
-            var loverComponentTwo = LoversComponent.KEY.get(loverTwo);
-
-            loverComponentTwo.setLover(lover.getUUID());
-            loverComponentTwo.sync();
-
             var worldModifierComponent = WorldModifierComponent.KEY.get(level);
-            worldModifierComponent.addModifier(loverTwo.getUUID(), LOVERS); // visually show lovers on the other player
+            worldModifierComponent.addModifier(loverTwo.getUUID(), LOVERS);
         }));
-
-        ResetPlayerEvent.EVENT.register(player -> {
-            var component = LoversComponent.KEY.get(player);
-            component.reset();
-            component.sync();
-        });
 
     }
 

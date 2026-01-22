@@ -7,7 +7,7 @@ import dev.doctor4t.wathe.game.GameFunctions;
 import dev.doctor4t.wathe.game.gamemode.MurderGameMode;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
+import org.agmas.harpymodloader.component.WorldModifierComponent;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,12 +16,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.cca.CustomWinnerComponent;
-import pro.fazeclan.river.stupid_express.modifier.lovers.cca.LoversComponent;
-
-import java.util.ArrayList;
 
 @Mixin(value = MurderGameMode.class, priority = 1500)
-public class LoversWinConditionMixin {
+public class LoversLoopMixin {
 
     @Inject(
             method = "tickServerGameLoop",
@@ -42,23 +39,26 @@ public class LoversWinConditionMixin {
 
         var config = StupidExpress.CONFIG;
         var loversAlive = false;
-        var remainingPlayers = serverWorld.getPlayers(GameFunctions::isPlayerAliveAndSurvival);
-        for (ServerPlayer player : remainingPlayers) {
-            var loversComponent = LoversComponent.KEY.get(player);
-            if (!loversComponent.isLover()) {
-                continue;
-            }
 
+        var modifierComponent = WorldModifierComponent.KEY.get(serverWorld);
+
+        var remainingPlayers = serverWorld.getPlayers(GameFunctions::isPlayerAliveAndSurvival);
+        var remainingLovers = remainingPlayers.stream().filter(p -> modifierComponent.isModifier(p, SEModifiers.LOVERS)).toList();
+
+        if (remainingLovers.size() == 1) {
+            // if your lover disconnects... ggs
+            GameFunctions.killPlayer(remainingLovers.getFirst(), true, null, StupidExpress.id("broken_heart"));
+            return;
+        }
+
+        for (ServerPlayer player : remainingLovers) {
             loversAlive = true;
 
             // check for only lovers win condition
-            if (loversComponent.won()) {
+            if (remainingPlayers.size() == remainingLovers.size()) {
                 var ce = CustomWinnerComponent.KEY.get(serverWorld);
-                var lovers = new ArrayList<Player>();
-                lovers.add(serverWorld.getPlayerByUUID(loversComponent.getLover()));
-                lovers.add(player);
                 ce.setWinningTextId(SEModifiers.LOVERS.identifier().getPath());
-                ce.setWinners(lovers);
+                ce.setWinners(remainingLovers.stream().map(sp -> serverWorld.getPlayerByUUID(sp.getUUID())).toList());
                 ce.setColor(SEModifiers.LOVERS.color());
                 ce.sync();
 
@@ -72,10 +72,7 @@ public class LoversWinConditionMixin {
 
             // check for lovers with killers win condition
             if (config.modifiersSection.loversSection.loversWinWithKillers) {
-                var lover = loversComponent.getLoverAsPlayer();
-                if (lover == null) {
-                    continue;
-                }
+                var lover = remainingLovers.stream().filter(p -> !p.equals(player)).toList().getFirst();
                 if (gameWorldComponent.isInnocent(player) && gameWorldComponent.isInnocent(lover)) {
                     continue;
                 }
