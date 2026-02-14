@@ -1,10 +1,12 @@
 package pro.fazeclan.river.stupid_express.mixin.role.initiate;
 
 import dev.doctor4t.wathe.cca.GameWorldComponent;
+import dev.doctor4t.wathe.index.WatheItems;
 import net.fabricmc.loader.impl.util.log.Log;
 import net.fabricmc.loader.impl.util.log.LogCategory;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import org.agmas.harpymodloader.modded_murder.ModdedMurderGameMode;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -43,6 +45,15 @@ public class InitiateAssignMixin {
                     && !gameWorldComponent.canUseKillerFeatures(player)
                     && !gameWorldComponent.isRole(player, SERoles.INITIATE)) {
                 gameWorldComponent.addRole(player, SERoles.INITIATE);
+
+                for (ItemStack item : player.getInventory().items) {
+                    if (item.is(WatheItems.KEY) || item.is(WatheItems.LETTER)) {
+                        continue;
+                    }
+
+                    player.getInventory().removeItem(item);
+                }
+
                 Log.info(LogCategory.GENERAL, player.getScoreboardName() + " -> " + SERoles.INITIATE.identifier().toString());
                 break;
             }
