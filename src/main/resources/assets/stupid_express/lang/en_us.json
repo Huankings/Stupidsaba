@@ -1,4 +1,6 @@
 {
+  "category.custom.stupid_express.other": "Others",
+
   "announcement.goals.stupid_express.amnesiac": "Steal a role from a body and act as that role!",
   "announcement.role.stupid_express.amnesiac": "Amnesiac!",
   "hud.stupid_express.amnesiac.select_body": "Interact to steal the role!",
@@ -15,6 +17,16 @@
   "item.stupid_express.lighter.tooltip": "When this goes on cooldown, that indicates it is time to ignite.\nInteract with this to ignite all currently doused players\nwhen the time has come.",
   "death_reason.stupid_express.failed_ignite": "ignition misfire.",
   "death_reason.stupid_express.ignited": "being lit ablaze.",
+
+  "announcement.role.stupid_express.thief": "Thief",
+  "announcement.goals.stupid_express.thief": "Steal weapons and killables to eliminate your opposition!",
+  "announcement.win.stupid_express.thief": "The Thief Wins!",
+  "game.win.stupid_express.thief": "The Thief has stolen enough weapons to secure their victory!",
+  "hud.stupid_express.thief.ready": "§6§lSteal §r§7| §a✔ Ready §7(%s§7)",
+  "hud.stupid_express.thief.cooldown": "§6§lSteal §r§7| §c⏱ %ss §7(%s§7)",
+  "guidebook.role.stupid_express:thief": "Thief",
+  "guidebook.role.title.stupid_express:thief": "The Pickpocket",
+  "guidebook.role.description.stupid_express:thief": "A neutral killer whose goal is to be the last one standing. Steal to survive. With an empty hand, right-click players to steal a random item from their inventory. Each successful theft triggers a §e1 minute and 30 second cooldown§r. If there are no items to steal, the attempt goes on cooldown for half that time.\n\nSteal a §eRevolver§r, §eKnife§r, or §eGrenade§r to gain the power to execute.\n\nInstinct highlights both players and items, marking potential marks and valuable loot alike. Choose your marks wisely. Empty pockets leave you vulnerable. Build your arsenal. Strike when it counts.",
 
   "announcement.goals.stupid_express.necromancer": "Bring back the dead to have them do your bidding!",
   "announcement.role.stupid_express.necromancer": "Necromancer!",

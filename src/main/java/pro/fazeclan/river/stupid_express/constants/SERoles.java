@@ -9,15 +9,18 @@ import lombok.Getter;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.Util;
 import org.agmas.harpymodloader.Harpymodloader;
+import org.agmas.harpymodloader.events.ModdedRoleAssigned;
 import org.agmas.harpymodloader.events.ResetPlayerEvent;
 import pro.fazeclan.river.stupid_express.BuyableShopEntry;
 import pro.fazeclan.river.stupid_express.StupidExpress;
+import pro.fazeclan.river.stupid_express.cca.AbilityCooldownComponent;
 import pro.fazeclan.river.stupid_express.role.amnesiac.RoleSelectionHandler;
 import pro.fazeclan.river.stupid_express.role.arsonist.ArsonistItemGivingHandler;
 import pro.fazeclan.river.stupid_express.role.arsonist.OilDousingHandler;
 import pro.fazeclan.river.stupid_express.role.arsonist.cca.DousedPlayerComponent;
 import pro.fazeclan.river.stupid_express.role.avaricious.AvariciousGoldHandler;
 import pro.fazeclan.river.stupid_express.role.necromancer.RevivalSelectionHandler;
+import pro.fazeclan.river.stupid_express.role.thief.packet.ThiefTakeItemC2SPacket;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -78,6 +81,16 @@ public class SERoles {
             true
     ));
 
+    public static Role THIEF = registerRole(new Role(
+        StupidExpress.id("thief"), 
+        0x7a3002, 
+        false, 
+        false, 
+        Role.MoodType.FAKE, 
+        -1, 
+        true
+    ));
+
     public static List<ShopEntry> INITIATE_SHOP = Util.make(new ArrayList<>(), entries -> {
         entries.add(new BuyableShopEntry(WatheItems.KNIFE.getDefaultInstance(), 200, ShopEntry.Type.WEAPON));
     });
@@ -129,6 +142,16 @@ public class SERoles {
 
         AvariciousGoldHandler.onGameStart();
 
+        /// THIEF
+
+        ThiefTakeItemC2SPacket.register();
+        ModdedRoleAssigned.EVENT.register((player, role) -> {
+			if (role.equals(THIEF)) {
+				AbilityCooldownComponent component = AbilityCooldownComponent.KEY.get(player);
+				component.setCooldown(ThiefTakeItemC2SPacket.THIEF_COOLDOWN);
+				component.sync();
+			}
+		});
     }
 
     public static Role registerRole(Role role) {
