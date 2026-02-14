@@ -8,6 +8,7 @@
     "modifier.lovers.LoversInstinctMixin",
     "role.CustomWinnerAnnouncementMixin",
     "role.CustomWinnerTextRendering",
+    "role.CustomWinPlayerRendererMixin",
     "role.amnesiac.AmnesiacHudMixin",
     "role.arsonist.ArsonistHudMixin",
     "role.arsonist.ArsonistInstinctMixin",
@@ -16,7 +17,11 @@
     "role.initiate.InitiateShopMixin",
     "role.necromancer.NecromancerHudMixin",
     "role.necromancer.NecromancerNoShopMixin",
-    "role.amnesiac.AmnesiacInstinctGlowMixin"
+    "role.amnesiac.AmnesiacInstinctGlowMixin",
+    "role.thief.ThiefCooldownHudMixin",
+    "role.thief.ThiefCrosshairRendererMixin",
+    "role.thief.ThiefInstinctMixin",
+    "role.thief.ThiefTakeItemMixin"
   ],
   "injectors": {
     "defaultRequire": 1
