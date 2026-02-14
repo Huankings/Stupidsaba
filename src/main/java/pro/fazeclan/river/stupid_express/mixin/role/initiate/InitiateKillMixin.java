@@ -6,6 +6,7 @@ import dev.doctor4t.wathe.cca.GameWorldComponent;
 import dev.doctor4t.wathe.cca.PlayerShopComponent;
 import dev.doctor4t.wathe.client.gui.RoleAnnouncementTexts;
 import dev.doctor4t.wathe.game.GameFunctions;
+import dev.doctor4t.wathe.index.WatheItems;
 import dev.doctor4t.wathe.util.AnnounceWelcomePayload;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.resources.ResourceLocation;
@@ -45,6 +46,7 @@ public abstract class InitiateKillMixin {
             return;
         }
         if (killer != null && gameWorldComponent.isRole(killer, SERoles.INITIATE)) {
+            killer.getInventory().removeItem(WatheItems.KNIFE.getDefaultInstance());
             var shuffledKillerRoles = new ArrayList<>(WatheRoles.ROLES);
             shuffledKillerRoles.removeIf(role -> Harpymodloader.VANNILA_ROLES.contains(role) || !role.canUseKiller() || HarpyModLoaderConfig.HANDLER.instance().disabled.contains(role.identifier().getPath()));
             if (shuffledKillerRoles.isEmpty()) shuffledKillerRoles.add(WatheRoles.KILLER);
@@ -101,6 +103,7 @@ public abstract class InitiateKillMixin {
                 case null, default -> newInitiateRole = SERoles.AMNESIAC;
             }
             for (ServerPlayer player : level.getPlayers(p -> gameWorldComponent.isRole(p, SERoles.INITIATE))) {
+                player.getInventory().removeItem(WatheItems.KNIFE.getDefaultInstance());
                 gameWorldComponent.addRole(player, newInitiateRole);
                 ModdedRoleAssigned.EVENT.invoker().assignModdedRole(player, newInitiateRole);
                 if (Harpymodloader.VANNILA_ROLES.contains(newInitiateRole)) {
@@ -137,6 +140,7 @@ public abstract class InitiateKillMixin {
                 case null, default -> newInitiateRole = SERoles.AMNESIAC;
             }
             for (ServerPlayer player : level.getPlayers(p -> gameWorldComponent.isRole(p, SERoles.INITIATE))) {
+                player.getInventory().removeItem(WatheItems.KNIFE.getDefaultInstance());
                 gameWorldComponent.addRole(player, newInitiateRole);
                 ModdedRoleAssigned.EVENT.invoker().assignModdedRole(player, newInitiateRole);
                 if (Harpymodloader.VANNILA_ROLES.contains(newInitiateRole)) {
