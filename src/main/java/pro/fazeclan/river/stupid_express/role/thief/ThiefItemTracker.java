@@ -44,14 +44,12 @@ public class ThiefItemTracker {
     public static boolean keepGameGoing(ServerLevel serverLevel) {
         if (serverLevel == null) return false;
         
-        synchronized (ACTIVE_ITEMS) {
-            ACTIVE_ITEMS.removeIf(uuid -> {
-                Entity entity = serverLevel.getEntity(uuid);
-                return entity == null || !entity.isAlive() || entity.isRemoved();
-            });
-            
-            return !ACTIVE_ITEMS.isEmpty();
-        }
+        ACTIVE_ITEMS.removeIf(uuid -> {
+            Entity entity = serverLevel.getEntity(uuid);
+            return entity == null || !entity.isAlive() || entity.isRemoved();
+        });
+        
+        return !ACTIVE_ITEMS.isEmpty();
     }
     
     public static boolean shouldTrack(ItemEntity itemEntity) {
