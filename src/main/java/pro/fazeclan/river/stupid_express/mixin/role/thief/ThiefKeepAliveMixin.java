@@ -15,11 +15,13 @@ import dev.doctor4t.wathe.game.gamemode.MurderGameMode;
 import dev.doctor4t.wathe.cca.GameRoundEndComponent;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
 import pro.fazeclan.river.stupid_express.role.thief.ThiefItemRules;
+import pro.fazeclan.river.stupid_express.role.thief.ThiefItemTracker;
 import pro.fazeclan.river.stupid_express.cca.CustomWinnerComponent;
 import java.util.List;
 
 @Mixin(MurderGameMode.class)
 public class ThiefKeepAliveMixin {
+
     @Inject(
         method = "tickServerGameLoop",
         at = @At(
@@ -39,20 +41,20 @@ public class ThiefKeepAliveMixin {
         List<ServerPlayer> alivePlayers = serverLevel.getPlayers(GameFunctions::isPlayerAliveAndSurvival);
         
         boolean thiefAlive = false;
-        boolean hasKeepGameGoingItem = false;
-        
+        boolean playerHasKeepGameGoingItem = false;
+
         for (ServerPlayer player : alivePlayers) {
             if (gameWorldComponent.isRole(player, SERoles.THIEF)) {
                 thiefAlive = true;
             }
 
-            if (!hasKeepGameGoingItem) {
-                hasKeepGameGoingItem = player.getInventory().items.stream()
+            if (!playerHasKeepGameGoingItem) {
+                playerHasKeepGameGoingItem = player.getInventory().items.stream()
                     .anyMatch(stack -> !stack.isEmpty() && 
                         ThiefItemRules.isKeepGameGoing(stack.getItem()));
             }
 
-            if (thiefAlive && hasKeepGameGoingItem) {
+            if (thiefAlive && playerHasKeepGameGoingItem) {
                 break;
             }
         }
@@ -63,13 +65,12 @@ public class ThiefKeepAliveMixin {
             nrwc.setWinners(List.of((Player) alivePlayers.getFirst()));
             nrwc.setColor(SERoles.THIEF.color());
             nrwc.sync();
+            GameRoundEndComponent.KEY.get(serverLevel).setRoundEndData(serverLevel.players(), GameFunctions.WinStatus.KILLERS);
             
-            GameRoundEndComponent.KEY.get(serverLevel)
-                .setRoundEndData(serverLevel.players(), GameFunctions.WinStatus.KILLERS);
             GameFunctions.stopGame(serverLevel);
         }
 
-        if (thiefAlive && hasKeepGameGoingItem && 
+        if (thiefAlive && (playerHasKeepGameGoingItem || ThiefItemTracker.keepGameGoing(serverLevel)) && 
             (winStatus == GameFunctions.WinStatus.KILLERS || winStatus == GameFunctions.WinStatus.PASSENGERS)) {
             ci.cancel();
         }

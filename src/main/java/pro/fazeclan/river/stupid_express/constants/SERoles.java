@@ -2,6 +2,7 @@ package pro.fazeclan.river.stupid_express.constants;
 
 import dev.doctor4t.wathe.api.Role;
 import dev.doctor4t.wathe.api.WatheRoles;
+import dev.doctor4t.wathe.api.event.GameEvents;
 import dev.doctor4t.wathe.cca.GameWorldComponent;
 import dev.doctor4t.wathe.index.WatheItems;
 import dev.doctor4t.wathe.util.ShopEntry;
@@ -20,6 +21,7 @@ import pro.fazeclan.river.stupid_express.role.arsonist.OilDousingHandler;
 import pro.fazeclan.river.stupid_express.role.arsonist.cca.DousedPlayerComponent;
 import pro.fazeclan.river.stupid_express.role.avaricious.AvariciousGoldHandler;
 import pro.fazeclan.river.stupid_express.role.necromancer.RevivalSelectionHandler;
+import pro.fazeclan.river.stupid_express.role.thief.ThiefItemTracker;
 import pro.fazeclan.river.stupid_express.role.thief.packet.ThiefTakeItemC2SPacket;
 
 import java.util.ArrayList;
@@ -145,12 +147,19 @@ public class SERoles {
         /// THIEF
 
         ThiefTakeItemC2SPacket.register();
+
         ModdedRoleAssigned.EVENT.register((player, role) -> {
 			if (role.equals(THIEF)) {
 				AbilityCooldownComponent component = AbilityCooldownComponent.KEY.get(player);
 				component.setCooldown(ThiefTakeItemC2SPacket.THIEF_COOLDOWN);
 				component.sync();
 			}
+		});
+
+        ThiefItemTracker.init();
+
+		GameEvents.ON_GAME_STOP.register((gameMode) -> {
+			ThiefItemTracker.clear();
 		});
     }
 
