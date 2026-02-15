@@ -19,7 +19,7 @@
   "death_reason.stupid_express.ignited": "being lit ablaze.",
 
   "announcement.role.stupid_express.thief": "Thief",
-  "announcement.goals.stupid_express.thief": "Steal weapons and killables to eliminate your opposition!",
+  "announcement.goals.stupid_express.thief": "Steal weapons to eliminate your opposition!",
   "announcement.win.stupid_express.thief": "The Thief Wins!",
   "game.win.stupid_express.thief": "The Thief has stolen enough weapons to secure their victory!",
   "hud.stupid_express.thief.ready": "§6§lSteal §r§7| §a✔ Ready §7(%s§7)",

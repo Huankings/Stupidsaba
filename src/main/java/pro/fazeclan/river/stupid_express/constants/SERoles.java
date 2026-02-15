@@ -145,9 +145,8 @@ public class SERoles {
         AvariciousGoldHandler.onGameStart();
 
         /// THIEF
-
+        Harpymodloader.setRoleMaximum(THIEF, 1);
         ThiefTakeItemC2SPacket.register();
-        
         ThiefItemTracker.init();
 
         ModdedRoleAssigned.EVENT.register((player, role) -> {
