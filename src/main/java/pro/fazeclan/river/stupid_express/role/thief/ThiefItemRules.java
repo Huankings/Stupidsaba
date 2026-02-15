@@ -33,7 +33,6 @@ public class ThiefItemRules {
         List<ResourceLocation> list = new ArrayList<>();
         list.add(getId(WatheItems.REVOLVER));
         list.add(getId(WatheItems.KNIFE));
-        list.add(getId(SEItems.LIGHTER));
         list.add(getId("kinswathe", "hunting_knife")); // Hunting Knife from Hunter role in kins wathe
         return list;
     }
