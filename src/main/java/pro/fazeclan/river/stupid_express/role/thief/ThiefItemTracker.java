@@ -1,59 +1,106 @@
 package pro.fazeclan.river.stupid_express.role.thief;
 
-import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerLevel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import dev.doctor4t.wathe.api.event.GameEvents;
+import dev.doctor4t.wathe.game.GameFunctions;
+import lombok.Getter;
 
 public class ThiefItemTracker {
-    private static final List<UUID> ACTIVE_ITEMS = new ArrayList<>();
+    private static final List<UUID> ACTIVE_ENTITY_ITEMS = new ArrayList<>();
+    private static final List<ItemStack> ACTIVE_INVENTORY_ITEMS = new ArrayList<>();
+
+    @Getter
+    private static boolean keepGameGoing;
     
     public static void init() {
-        EntityTrackingEvents.START_TRACKING.register((trackedEntity, player) -> {
-            if (trackedEntity instanceof ItemEntity item && shouldTrack(item)) {
-                trackItem(item);
+        ServerEntityEvents.ENTITY_LOAD.register((entity, serverLevel) -> {
+            if (entity instanceof ItemEntity item && shouldTrack(item)) {
+                trackEntityItem(item);
+                updateTrackedInventoryItems(serverLevel);
+                updateKeepGameGoing();
             }
         });
+
+        ServerEntityEvents.ENTITY_UNLOAD.register((entity, serverLevel) -> {
+            if (entity instanceof ItemEntity item) {
+                untrackEntityItem(item);
+                updateTrackedInventoryItems(serverLevel);
+                updateKeepGameGoing();
+            }
+        });
+
+        GameEvents.ON_FINISH_INITIALIZE.register((world, gameWorldComponent) -> {
+			updateTrackedInventoryItems((ServerLevel)world);
+            updateKeepGameGoing();
+		});
+
+        GameEvents.ON_GAME_START.register((gameMode) -> {
+			ThiefItemTracker.reset();
+		});
+
+        GameEvents.ON_GAME_STOP.register((gameMode) -> {
+			ThiefItemTracker.reset();
+		});
     }
 
-    public static void clear() {
-        ACTIVE_ITEMS.clear();
+    public static void onKillPlayer(ServerPlayer victim) {
+        updateTrackedInventoryItems((ServerLevel)victim.level());
+        updateKeepGameGoing();
+    }
+
+    public static void onBuyItem(ServerPlayer player) {
+        updateTrackedInventoryItems((ServerLevel)player.level());
+        updateKeepGameGoing();
+    }
+
+    private static void reset() {
+        ACTIVE_ENTITY_ITEMS.clear();
+        ACTIVE_INVENTORY_ITEMS.clear();
+        keepGameGoing = false;
     }
     
-    public static void trackItem(ItemEntity item) {
+    private static void trackEntityItem(ItemEntity item) {
         if (item == null || !item.isAlive()) return;
         
         UUID uuid = item.getUUID();
-        if (!ACTIVE_ITEMS.contains(uuid)) {
-            ACTIVE_ITEMS.add(uuid);
+        if (!ACTIVE_ENTITY_ITEMS.contains(uuid)) {
+            ACTIVE_ENTITY_ITEMS.add(uuid);
         }
     }
     
-    public static void untrackItem(ItemEntity item) {
+    private static void untrackEntityItem(ItemEntity item) {
         if (item == null) return;
         
         UUID uuid = item.getUUID();
-        if (ACTIVE_ITEMS.contains(uuid)) {
-            ACTIVE_ITEMS.remove(uuid);
+        ACTIVE_ENTITY_ITEMS.remove(uuid);
+    }
+
+    private static void updateTrackedInventoryItems(ServerLevel serverLevel) {
+        List<ServerPlayer> alivePlayers = serverLevel.getPlayers(p -> GameFunctions.isPlayerAliveAndSurvival(p));
+        
+        ACTIVE_INVENTORY_ITEMS.clear();
+        
+        for (ServerPlayer player : alivePlayers) {
+            player.getInventory().items.stream()
+                .filter(stack -> !stack.isEmpty() && 
+                    ThiefItemRules.isKeepGameGoing(stack.getItem()))
+                .forEach(ACTIVE_INVENTORY_ITEMS::add);
         }
     }
-    
-    public static boolean keepGameGoing(ServerLevel serverLevel) {
-        if (serverLevel == null) return false;
-        
-        ACTIVE_ITEMS.removeIf(uuid -> {
-            Entity entity = serverLevel.getEntity(uuid);
-            return entity == null || !entity.isAlive() || entity.isRemoved();
-        });
-        
-        return !ACTIVE_ITEMS.isEmpty();
+
+    private static void updateKeepGameGoing() {
+        keepGameGoing = !ACTIVE_ENTITY_ITEMS.isEmpty() || !ACTIVE_INVENTORY_ITEMS.isEmpty();
     }
     
-    public static boolean shouldTrack(ItemEntity itemEntity) {
-        if (itemEntity == null || !itemEntity.isAlive()) return false;
+    private static boolean shouldTrack(ItemEntity itemEntity) {
+        if (itemEntity == null) return false;
         return ThiefItemRules.isKeepGameGoing(itemEntity.getItem().getItem());
     }
 }

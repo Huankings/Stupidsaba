@@ -17,7 +17,9 @@
     "role.initiate.InitiateCoinsOnMoodMixin",
     "role.initiate.InitiateKillMixin",
     "role.necromancer.NecromancerStatsMixin",
-    "role.thief.ThiefKeepAliveMixin"
+    "role.thief.ThiefKeepAliveMixin",
+    "role.thief.ThiefTrackKillPlayerMixin",
+    "role.thief.ThiefTrackShopMixin"
   ],
   "injectors": {
     "defaultRequire": 1

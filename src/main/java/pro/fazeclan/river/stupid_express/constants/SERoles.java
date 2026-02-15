@@ -147,6 +147,8 @@ public class SERoles {
         /// THIEF
 
         ThiefTakeItemC2SPacket.register();
+        
+        ThiefItemTracker.init();
 
         ModdedRoleAssigned.EVENT.register((player, role) -> {
 			if (role.equals(THIEF)) {
@@ -154,12 +156,6 @@ public class SERoles {
 				component.setCooldown(ThiefTakeItemC2SPacket.THIEF_COOLDOWN);
 				component.sync();
 			}
-		});
-
-        ThiefItemTracker.init();
-
-		GameEvents.ON_GAME_STOP.register((gameMode) -> {
-			ThiefItemTracker.clear();
 		});
     }
 

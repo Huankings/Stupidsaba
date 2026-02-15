@@ -14,7 +14,6 @@ import dev.doctor4t.wathe.game.GameFunctions;
 import dev.doctor4t.wathe.game.gamemode.MurderGameMode;
 import dev.doctor4t.wathe.cca.GameRoundEndComponent;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
-import pro.fazeclan.river.stupid_express.role.thief.ThiefItemRules;
 import pro.fazeclan.river.stupid_express.role.thief.ThiefItemTracker;
 import pro.fazeclan.river.stupid_express.cca.CustomWinnerComponent;
 import java.util.List;
@@ -41,20 +40,10 @@ public class ThiefKeepAliveMixin {
         List<ServerPlayer> alivePlayers = serverLevel.getPlayers(GameFunctions::isPlayerAliveAndSurvival);
         
         boolean thiefAlive = false;
-        boolean playerHasKeepGameGoingItem = false;
 
         for (ServerPlayer player : alivePlayers) {
             if (gameWorldComponent.isRole(player, SERoles.THIEF)) {
                 thiefAlive = true;
-            }
-
-            if (!playerHasKeepGameGoingItem) {
-                playerHasKeepGameGoingItem = player.getInventory().items.stream()
-                    .anyMatch(stack -> !stack.isEmpty() && 
-                        ThiefItemRules.isKeepGameGoing(stack.getItem()));
-            }
-
-            if (thiefAlive && playerHasKeepGameGoingItem) {
                 break;
             }
         }
@@ -70,7 +59,7 @@ public class ThiefKeepAliveMixin {
             GameFunctions.stopGame(serverLevel);
         }
 
-        if (thiefAlive && (playerHasKeepGameGoingItem || ThiefItemTracker.keepGameGoing(serverLevel)) && 
+        if (thiefAlive && ThiefItemTracker.isKeepGameGoing() && 
             (winStatus == GameFunctions.WinStatus.KILLERS || winStatus == GameFunctions.WinStatus.PASSENGERS)) {
             ci.cancel();
         }
