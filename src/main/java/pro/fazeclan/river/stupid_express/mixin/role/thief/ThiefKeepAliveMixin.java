@@ -4,20 +4,17 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.At;
-
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-
 import dev.doctor4t.wathe.cca.GameWorldComponent;
 import dev.doctor4t.wathe.game.GameFunctions;
 import dev.doctor4t.wathe.game.gamemode.MurderGameMode;
 import dev.doctor4t.wathe.cca.GameRoundEndComponent;
-
+import dev.doctor4t.wathe.cca.GameTimeComponent;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
 import pro.fazeclan.river.stupid_express.role.thief.ThiefItemRules;
 import pro.fazeclan.river.stupid_express.cca.CustomWinnerComponent;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +33,11 @@ public class ThiefKeepAliveMixin {
         List<ServerPlayer> alivePlayers = serverLevel.players().stream()
             .filter(GameFunctions::isPlayerAliveAndSurvival)
             .collect(Collectors.toList());
+
+        GameTimeComponent gameTimeComponent = GameTimeComponent.KEY.get(serverLevel);
+        if (!gameTimeComponent.hasTime()) {
+            return;
+        }
         
         boolean thiefAlive = false;
         boolean hasKeepGameGoingItem = false;
