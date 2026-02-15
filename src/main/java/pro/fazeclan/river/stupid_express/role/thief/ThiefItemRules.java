@@ -34,6 +34,7 @@ public class ThiefItemRules {
         list.add(getId(WatheItems.REVOLVER));
         list.add(getId(WatheItems.KNIFE));
         list.add(getId(SEItems.LIGHTER));
+        list.add(getId("kinswathe", "hunting_knife")); // Hunting Knife from Hunter role in kins wathe
         return list;
     }
 
@@ -49,7 +50,7 @@ public class ThiefItemRules {
         list.add(getId(WatheItems.FIRECRACKER));
         list.add(getId(WatheItems.BODY_BAG));
         list.add(getId(WatheItems.NOTE));
-        list.add(getId("noellesroles", "master_key")); // Master key from Conductor role in noellesroles
+        list.add(getId("noellesroles", "master_key")); // Master Key from Conductor role in noellesroles
         return list;
     }
 }
