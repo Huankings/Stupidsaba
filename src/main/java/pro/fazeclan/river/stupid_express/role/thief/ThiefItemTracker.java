@@ -17,14 +17,14 @@ public class ThiefItemTracker {
     private static final List<ItemStack> ACTIVE_INVENTORY_ITEMS = new ArrayList<>();
 
     @Getter
-    private static boolean keepGameGoing;
+    private static boolean weaponAvailable;
     
     public static void init() {
         ServerEntityEvents.ENTITY_LOAD.register((entity, serverLevel) -> {
             if (entity instanceof ItemEntity item && shouldTrack(item)) {
                 trackEntityItem(item);
                 updateTrackedInventoryItems(serverLevel);
-                updateKeepGameGoing();
+                updateWeaponAvailable();
             }
         });
 
@@ -32,13 +32,13 @@ public class ThiefItemTracker {
             if (entity instanceof ItemEntity item) {
                 untrackEntityItem(item);
                 updateTrackedInventoryItems(serverLevel);
-                updateKeepGameGoing();
+                updateWeaponAvailable();
             }
         });
 
         GameEvents.ON_FINISH_INITIALIZE.register((world, gameWorldComponent) -> {
 			updateTrackedInventoryItems((ServerLevel)world);
-            updateKeepGameGoing();
+            updateWeaponAvailable();
 		});
 
         GameEvents.ON_GAME_START.register((gameMode) -> {
@@ -52,18 +52,18 @@ public class ThiefItemTracker {
 
     public static void onKillPlayer(ServerPlayer victim) {
         updateTrackedInventoryItems((ServerLevel)victim.level());
-        updateKeepGameGoing();
+        updateWeaponAvailable();
     }
 
     public static void onBuyItem(ServerPlayer player) {
         updateTrackedInventoryItems((ServerLevel)player.level());
-        updateKeepGameGoing();
+        updateWeaponAvailable();
     }
 
     private static void reset() {
         ACTIVE_ENTITY_ITEMS.clear();
         ACTIVE_INVENTORY_ITEMS.clear();
-        keepGameGoing = false;
+        weaponAvailable = false;
     }
     
     private static void trackEntityItem(ItemEntity item) {
@@ -95,8 +95,8 @@ public class ThiefItemTracker {
         }
     }
 
-    private static void updateKeepGameGoing() {
-        keepGameGoing = !ACTIVE_ENTITY_ITEMS.isEmpty() || !ACTIVE_INVENTORY_ITEMS.isEmpty();
+    private static void updateWeaponAvailable() {
+        weaponAvailable = !ACTIVE_ENTITY_ITEMS.isEmpty() || !ACTIVE_INVENTORY_ITEMS.isEmpty();
     }
     
     private static boolean shouldTrack(ItemEntity itemEntity) {

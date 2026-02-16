@@ -59,7 +59,7 @@ public class ThiefKeepAliveMixin {
             GameFunctions.stopGame(serverLevel);
         }
 
-        if (thiefAlive && ThiefItemTracker.isKeepGameGoing() && 
+        if (thiefAlive && ThiefItemTracker.isWeaponAvailable() && 
             (winStatus == GameFunctions.WinStatus.KILLERS || winStatus == GameFunctions.WinStatus.PASSENGERS)) {
             ci.cancel();
         }
