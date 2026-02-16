@@ -46,7 +46,7 @@ public class ThiefTakeItemMixin {
                 return;
             }
             
-            ClientPlayNetworking.send(new ThiefTakeItemC2SPacket(target.getUUID()));
+            ThiefTakeItemC2SPacket.send(target);;
             
             cir.setReturnValue(InteractionResult.SUCCESS);
         }

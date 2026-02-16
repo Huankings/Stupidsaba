@@ -1,11 +1,11 @@
 package pro.fazeclan.river.stupid_express.role.thief.packet;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -39,16 +39,17 @@ public record ThiefTakeItemC2SPacket(UUID targetUuid) implements CustomPacketPay
 
     public final static int THIEF_COOLDOWN = 90 * 20;
     
-    public void handle(MinecraftServer server, ServerPlayer player) {
-        server.execute(() -> {
-            ServerPlayer target = server.getPlayerList().getPlayer(targetUuid);
+    public static void handle(ThiefTakeItemC2SPacket payload, ServerPlayNetworking.Context context) {
+        ServerPlayer player = context.player();
+        context.server().execute(() -> {
+            ServerPlayer target = context.server().getPlayerList().getPlayer(payload.targetUuid);
             if (target != null) {
                 handleThiefTakeItem(player, target);
             }
         });
     }
     
-    private void handleThiefTakeItem(ServerPlayer thief, ServerPlayer target) {
+    private static void handleThiefTakeItem(ServerPlayer thief, ServerPlayer target) {
         // Get component
         AbilityCooldownComponent abilityCooldownComponent = AbilityCooldownComponent.KEY.get(thief);
         
@@ -185,8 +186,11 @@ public record ThiefTakeItemC2SPacket(UUID targetUuid) implements CustomPacketPay
     public static void register() {
         PayloadTypeRegistry.playC2S().register(ID, CODEC);
         
-        ServerPlayNetworking.registerGlobalReceiver(ID, (payload, context) -> {
-            payload.handle(context.server(), context.player());
-        });
+        // Use method reference to static handle method
+        ServerPlayNetworking.registerGlobalReceiver(ID, ThiefTakeItemC2SPacket::handle);
+    }
+
+    public static void send(Player target) {
+        ClientPlayNetworking.send(new ThiefTakeItemC2SPacket(target.getUUID()));
     }
 }
