@@ -42,7 +42,8 @@ public abstract class ThiefCooldownHudMixin {
 
             AbilityCooldownComponent abilityCooldownComponent = AbilityCooldownComponent.KEY.get(client.player);
             
-            String keybindName = "RMB";
+            // Actually get the keybind name lol
+            String keybindName = Minecraft.getInstance().options.keyUse.getTranslatedKeyMessage().getString();
             
             MutableComponent displayText;
             

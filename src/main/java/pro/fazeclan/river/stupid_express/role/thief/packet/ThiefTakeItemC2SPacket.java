@@ -50,7 +50,6 @@ public record ThiefTakeItemC2SPacket(UUID targetUuid) implements CustomPacketPay
     }
     
     private static void handleThiefTakeItem(ServerPlayer thief, ServerPlayer target) {
-        // Get component
         AbilityCooldownComponent abilityCooldownComponent = AbilityCooldownComponent.KEY.get(thief);
         
         // Validation call
@@ -82,7 +81,7 @@ public record ThiefTakeItemC2SPacket(UUID targetUuid) implements CustomPacketPay
             return;
         }
         
-        // Pick random item
+        // Pick a random item
         int targetIndex = thief.getRandom().nextInt(count);
         int currentIndex = 0;
         int slotIndex = -1;
@@ -93,7 +92,7 @@ public record ThiefTakeItemC2SPacket(UUID targetUuid) implements CustomPacketPay
             if (!stack.isEmpty() && ThiefItemRules.canTake(stack.getItem())) {
                 if (currentIndex == targetIndex) {
                     slotIndex = i;
-                    stolenItem = stack.copy(); // Use copy to avoid reference issues
+                    stolenItem = stack.copy(); // Use copy to avoid using original stack
                     break;
                 }
                 currentIndex++;
@@ -172,8 +171,10 @@ public record ThiefTakeItemC2SPacket(UUID targetUuid) implements CustomPacketPay
         // Check if in same world/dimension
         if (!thief.level().dimension().equals(target.level().dimension())) return false;
 
+        // Distance check
         double distance = thief.distanceTo(target);
         
+        // Add leniency to server side check
         if (thief.level().isClientSide) {
             if (distance > 1.0) return false;
         } else {
@@ -187,9 +188,11 @@ public record ThiefTakeItemC2SPacket(UUID targetUuid) implements CustomPacketPay
         PayloadTypeRegistry.playC2S().register(ID, CODEC);
         
         // Use method reference to static handle method
+        // Before I was doing it wrong by using a non static handle method ¯\_(ツ)_/¯
         ServerPlayNetworking.registerGlobalReceiver(ID, ThiefTakeItemC2SPacket::handle);
     }
 
+    // Send packet as client
     public static void send(Player target) {
         ClientPlayNetworking.send(new ThiefTakeItemC2SPacket(target.getUUID()));
     }

@@ -26,7 +26,6 @@ import pro.fazeclan.river.stupid_express.role.thief.packet.ThiefTakeItemC2SPacke
 @Mixin(CrosshairRenderer.class)
 public class ThiefCrosshairRendererMixin {
     
-    @Shadow @Final private static ResourceLocation CROSSHAIR;
     @Shadow @Final private static ResourceLocation CROSSHAIR_TARGET;
     
     private static ResourceLocation THIEF_READY = 
@@ -62,12 +61,12 @@ public class ThiefCrosshairRendererMixin {
         if (!shouldShowThiefCrosshair(client, player)) {
             return;
         }
-        
-        ci.cancel();
-        
+
         if (!client.options.getCameraType().isFirstPerson()) {
             return;
         }
+        
+        ci.cancel();
         
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate((float)guiGraphics.guiWidth() / 2.0F, (float)guiGraphics.guiHeight() / 2.0F, 0.0F);

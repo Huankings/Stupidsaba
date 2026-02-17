@@ -11,7 +11,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import pro.fazeclan.river.stupid_express.cca.AbilityCooldownComponent;
 import pro.fazeclan.river.stupid_express.role.thief.packet.ThiefTakeItemC2SPacket;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 @Mixin(Player.class)
 public class ThiefTakeItemMixin {
@@ -29,6 +28,8 @@ public class ThiefTakeItemMixin {
         Player player = (Player) (Object) this;
         
         Level level = player.level();
+
+        // Only run on client side
         if (level.isClientSide()) {
             if (!(entity instanceof Player)) return;
 

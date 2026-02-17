@@ -13,13 +13,16 @@ import dev.doctor4t.wathe.game.GameFunctions;
 import lombok.Getter;
 
 public class ThiefItemTracker {
+    // Keep track of dropped items
     private static final List<UUID> ACTIVE_ENTITY_ITEMS = new ArrayList<>();
+    // Keep track of items in player inventories
     private static final List<ItemStack> ACTIVE_INVENTORY_ITEMS = new ArrayList<>();
 
     @Getter
     private static boolean weaponAvailable;
     
     public static void init() {
+        // Watch for items spawning in the world
         ServerEntityEvents.ENTITY_LOAD.register((entity, serverLevel) -> {
             if (entity instanceof ItemEntity item && shouldTrack(item)) {
                 trackEntityItem(item);
@@ -28,6 +31,7 @@ public class ThiefItemTracker {
             }
         });
 
+        // Watch for items despawning in the world
         ServerEntityEvents.ENTITY_UNLOAD.register((entity, serverLevel) -> {
             if (entity instanceof ItemEntity item) {
                 untrackEntityItem(item);
@@ -36,11 +40,13 @@ public class ThiefItemTracker {
             }
         });
 
+        // Check inventories when the gamemode starts initializing
         GameEvents.ON_FINISH_INITIALIZE.register((world, gameWorldComponent) -> {
 			updateTrackedInventoryItems((ServerLevel)world);
             updateWeaponAvailable();
 		});
 
+        // Reset when game starts/ends
         GameEvents.ON_GAME_START.register((gameMode) -> {
 			ThiefItemTracker.reset();
 		});
@@ -50,11 +56,13 @@ public class ThiefItemTracker {
 		});
     }
 
+    // Check inventories when a player dies
     public static void onKillPlayer(ServerPlayer victim) {
         updateTrackedInventoryItems((ServerLevel)victim.level());
         updateWeaponAvailable();
     }
 
+    // Check Inventories when a player buys a item
     public static void onBuyItem(ServerPlayer player) {
         updateTrackedInventoryItems((ServerLevel)player.level());
         updateWeaponAvailable();
@@ -82,6 +90,7 @@ public class ThiefItemTracker {
         ACTIVE_ENTITY_ITEMS.remove(uuid);
     }
 
+    // Scan all alive players items in their inventory
     private static void updateTrackedInventoryItems(ServerLevel serverLevel) {
         List<ServerPlayer> alivePlayers = serverLevel.getPlayers(p -> GameFunctions.isPlayerAliveAndSurvival(p));
         

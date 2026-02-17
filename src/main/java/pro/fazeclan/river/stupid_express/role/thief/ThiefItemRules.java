@@ -9,18 +9,22 @@ import net.minecraft.world.item.Item;
 
 public class ThiefItemRules {
 
+    // Gets the ResourceLocation for an item
     public static ResourceLocation getId(Item item) {
         return BuiltInRegistries.ITEM.getKey(item);
     }
 
+    // Builds an ResourceLocation from mod + name
     public static ResourceLocation getId(String modId, String itemName) {
         return ResourceLocation.fromNamespaceAndPath(modId, itemName);
     }
 
+    // Checks if thief is allowed to take the item
     public static boolean canTake(Item item) {
         return CAN_TAKE.contains(getId(item));
     }
 
+    // If true, game doesn't end when item is available in the game and the thief is alive
     public static boolean isKeepGameGoing(Item item) {
         return KEEP_GAME_GOING.contains(getId(item));
     }

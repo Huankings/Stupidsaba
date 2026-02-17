@@ -48,6 +48,7 @@ public class ThiefKeepAliveMixin {
             }
         }
         
+        // Check if Thief is the last one standing
         if (alivePlayers.size() == 1 && thiefAlive) {
             CustomWinnerComponent nrwc = CustomWinnerComponent.KEY.get(serverLevel);
             nrwc.setWinningTextId(SERoles.THIEF.identifier().getPath());
@@ -59,6 +60,7 @@ public class ThiefKeepAliveMixin {
             GameFunctions.stopGame(serverLevel);
         }
 
+        // Keep game going - check for if thief is alive and there are available items from ThiefItemRules.isKeepGameGoing()
         if (thiefAlive && ThiefItemTracker.isWeaponAvailable() && 
             (winStatus == GameFunctions.WinStatus.KILLERS || winStatus == GameFunctions.WinStatus.PASSENGERS)) {
             ci.cancel();
