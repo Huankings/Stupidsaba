@@ -34,7 +34,8 @@
     {
       "config": "stupid_express.client.mixins.json",
       "environment": "client"
-    }
+    },
+    "stupid_express_compat.mixins.json"
   ],
   "depends": {
     "fabricloader": "*",

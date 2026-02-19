@@ -1,0 +1,15 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "pro.fazeclan.river.stupid_express.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "modifier.lovers.LoversExecutionerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}
