@@ -4,6 +4,7 @@ import dev.doctor4t.wathe.api.WatheRoles;
 import dev.doctor4t.wathe.cca.GameWorldComponent;
 import dev.doctor4t.wathe.cca.PlayerShopComponent;
 import dev.doctor4t.wathe.client.gui.RoleAnnouncementTexts;
+import dev.doctor4t.wathe.compat.TrainVoicePlugin;
 import dev.doctor4t.wathe.entity.PlayerBodyEntity;
 import dev.doctor4t.wathe.util.AnnounceWelcomePayload;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
@@ -101,6 +102,7 @@ public class RevivalSelectionHandler {
                         )
                 );
             }
+            TrainVoicePlugin.resetPlayer(revived.getUUID());
 
             return InteractionResult.CONSUME;
         }));
