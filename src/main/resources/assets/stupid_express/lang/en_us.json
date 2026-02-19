@@ -40,6 +40,7 @@
 
   "announcement.modifier.stupid_express.lovers": "Lover!",
   "announcement.win.stupid_express.lovers": "The Lovers Win!",
+  "announcement.role.stupid_express.lovers": "Lovers",
   "game.win.stupid_express.lovers": "The pair managed to stay alive until they were the last two standing!",
   "tip.stupid_express.lovers.partner": "Your partner is %s!",
   "hud.stupid_express.lovers.partner": "Partner",

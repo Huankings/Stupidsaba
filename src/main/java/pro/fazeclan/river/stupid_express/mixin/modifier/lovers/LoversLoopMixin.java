@@ -17,7 +17,7 @@ import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.cca.CustomWinnerComponent;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 
-@Mixin(value = MurderGameMode.class, priority = 1500)
+@Mixin(value = MurderGameMode.class, priority = 900)
 public class LoversLoopMixin {
 
     @Inject(
