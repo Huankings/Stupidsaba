@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 
 import java.util.List;
+import java.util.UUID;
 
 @Mixin(ExecutionerPlayerComponent.class)
 public class LoversExecutionerMixin {
@@ -23,7 +24,7 @@ public class LoversExecutionerMixin {
     private Player player;
 
     @Inject(method = "serverTick", at = @At(value = "INVOKE", target = "Ljava/util/Collections;shuffle(Ljava/util/List;)V"))
-    private void excludeLoversIfLover(CallbackInfo ci, @Local(name = "innocentPlayers") List<ServerPlayer> innocentPlayers) {
+    private void excludeLoversIfLover(CallbackInfo ci, @Local(name = "innocentPlayers") List<UUID> innocentPlayers) {
 
         var modifierComponent = WorldModifierComponent.KEY.get(player.level());
         innocentPlayers.removeIf(target ->
