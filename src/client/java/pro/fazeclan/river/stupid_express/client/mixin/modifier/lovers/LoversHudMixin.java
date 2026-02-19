@@ -19,8 +19,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import pro.fazeclan.river.stupid_express.StupidExpress;
-import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.client.StupidExpressClient;
+import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 
 import java.util.UUID;
 

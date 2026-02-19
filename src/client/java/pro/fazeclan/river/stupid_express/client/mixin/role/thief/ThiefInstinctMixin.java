@@ -1,6 +1,5 @@
 package pro.fazeclan.river.stupid_express.client.mixin.role.thief;
 
-import pro.fazeclan.river.stupid_express.constants.SERoles;
 import dev.doctor4t.wathe.cca.GameWorldComponent;
 import dev.doctor4t.wathe.client.WatheClient;
 import net.minecraft.client.KeyMapping;
@@ -13,6 +12,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import pro.fazeclan.river.stupid_express.constants.SERoles;
+
 import java.awt.*;
 
 @Mixin(WatheClient.class)

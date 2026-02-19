@@ -11,8 +11,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
 
-import java.awt.*;
-
 @Mixin(value = WatheClient.class, priority = 500)
 public class InitiateInstinctMixin {
 
