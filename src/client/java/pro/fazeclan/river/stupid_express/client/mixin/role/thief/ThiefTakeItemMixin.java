@@ -1,5 +1,6 @@
 package pro.fazeclan.river.stupid_express.client.mixin.role.thief;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionHand;
@@ -46,8 +47,8 @@ public class ThiefTakeItemMixin {
                 cir.setReturnValue(InteractionResult.FAIL);
                 return;
             }
-            
-            ThiefTakeItemC2SPacket.send(target);;
+
+            ClientPlayNetworking.send(new ThiefTakeItemC2SPacket(target.getUUID()));
             
             cir.setReturnValue(InteractionResult.SUCCESS);
         }

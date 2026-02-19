@@ -1,6 +1,5 @@
 package pro.fazeclan.river.stupid_express.role.thief.packet;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;
@@ -190,10 +189,5 @@ public record ThiefTakeItemC2SPacket(UUID targetUuid) implements CustomPacketPay
         // Use method reference to static handle method
         // Before I was doing it wrong by using a non static handle method ¯\_(ツ)_/¯
         ServerPlayNetworking.registerGlobalReceiver(ID, ThiefTakeItemC2SPacket::handle);
-    }
-
-    // Send packet as client
-    public static void send(Player target) {
-        ClientPlayNetworking.send(new ThiefTakeItemC2SPacket(target.getUUID()));
     }
 }
