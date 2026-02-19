@@ -1,16 +1,17 @@
 package pro.fazeclan.river.stupid_express.role.thief;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
-import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.level.ServerLevel;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import dev.doctor4t.wathe.api.event.GameEvents;
 import dev.doctor4t.wathe.game.GameFunctions;
 import lombok.Getter;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class ThiefItemTracker {
     // Keep track of dropped items

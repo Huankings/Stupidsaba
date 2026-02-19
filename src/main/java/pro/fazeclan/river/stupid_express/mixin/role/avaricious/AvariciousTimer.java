@@ -14,8 +14,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
 import pro.fazeclan.river.stupid_express.role.avaricious.AvariciousGoldHandler;
 
-import java.awt.*;
-
 @Mixin(MurderGameMode.class)
 public class AvariciousTimer {
 

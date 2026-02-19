@@ -1,15 +1,15 @@
 package pro.fazeclan.river.stupid_express.mixin.role.thief;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import dev.doctor4t.wathe.game.GameFunctions;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import pro.fazeclan.river.stupid_express.role.thief.ThiefItemTracker;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import pro.fazeclan.river.stupid_express.role.thief.ThiefItemTracker;
 
 @Mixin(GameFunctions.class)
 public class ThiefTrackKillPlayerMixin {

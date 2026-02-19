@@ -1,11 +1,12 @@
 package pro.fazeclan.river.stupid_express.role.thief;
 
-import java.util.ArrayList;
-import java.util.List;
 import dev.doctor4t.wathe.index.WatheItems;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ThiefItemRules {
 
