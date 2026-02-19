@@ -4,6 +4,7 @@ import dev.doctor4t.wathe.api.Role;
 import dev.doctor4t.wathe.api.WatheRoles;
 import dev.doctor4t.wathe.api.event.GameEvents;
 import dev.doctor4t.wathe.cca.GameWorldComponent;
+import dev.doctor4t.wathe.game.GameFunctions;
 import dev.doctor4t.wathe.index.WatheItems;
 import dev.doctor4t.wathe.util.ShopEntry;
 import lombok.Getter;
@@ -127,7 +128,7 @@ public class SERoles {
             }
             var level = playerList.getFirst().level();
             var gameWorldComponent = GameWorldComponent.KEY.get(level);
-            var killerRoleCount = (int) Math.floor((float) playerList.size() / (float) gameWorldComponent.getKillerDividend());
+            var killerRoleCount = (int) Math.floor((float) GameFunctions.getReadyPlayerCount(level) / (float) gameWorldComponent.getKillerDividend());
 
             if (killerRoleCount > 1) {
                 Harpymodloader.setRoleMaximum(NECROMANCER, 1);
