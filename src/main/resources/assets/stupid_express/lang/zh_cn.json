@@ -1,4 +1,6 @@
 {
+  "category.custom.stupid_express.other": "其他",
+
   "announcement.goals.stupid_express.amnesiac": "从尸首上汲取回忆，穿戴其过往经历",
   "announcement.role.stupid_express.amnesiac": "失忆患者",
   "hud.stupid_express.amnesiac.select_body": "与尸体交互，扮演其生前的角色",
@@ -16,6 +18,16 @@
   "death_reason.stupid_express.failed_ignite": "点火失败",
   "death_reason.stupid_express.ignited": "欲火焚身",
 
+  "announcement.role.stupid_express.thief": "小偷",
+  "announcement.goals.stupid_express.thief": "窃取武器，成为最后的幸存者",
+  "announcement.win.stupid_express.thief": "小偷胜利",
+  "game.win.stupid_express.thief": "小偷已窃取足够的武器并赢得了胜利",
+  "hud.stupid_express.thief.ready": "§a✔ 就绪 §7(%s§7)",
+  "hud.stupid_express.thief.cooldown": "§c⏱ %s秒 §7(%s§7)",
+  "guidebook.role.stupid_express:thief": "小偷",
+  "guidebook.role.title.stupid_express:thief": "小偷",
+  "guidebook.role.description.stupid_express:thief": "一个中立杀手，目标是成为最后的幸存者。偷窃以求生存。空手时，按§e交互键§r（默认右键）对玩家进行交互，从其物品栏中窃取一件随机物品。每次成功偷窃会触发§e1分30秒冷却§r。如果没有物品可偷，每次尝试仍会触发一半时间的冷却。\n\n窃取§e左轮手枪§r、§e匕首§r或§e手榴弹§r即可获得处决他人的力量。\n\n本能会高亮显示玩家和物品，可能标记出重要物品。所以请明智选择。空手会使你没有反击手段。",
+
   "announcement.goals.stupid_express.necromancer": "复活死者，让他们为你效力",
   "announcement.role.stupid_express.necromancer": "死灵法师",
   "hud.stupid_express.necromancer.possible_revive": "与其互动可将此玩家复活为杀手",
@@ -28,6 +40,7 @@
 
   "announcement.modifier.stupid_express.lovers": "恋人",
   "announcement.win.stupid_express.lovers": "恋人胜利",
+  "announcement.role.stupid_express.lovers": "恋人",
   "game.win.stupid_express.lovers": "这对伴侣一直存活到最后",
   "tip.stupid_express.lovers.partner": "你的伴侣是 %s",
   "hud.stupid_express.lovers.partner": "伴侣",
@@ -52,6 +65,11 @@
   "stupid_express.config.initiate_fallback_options.AMNESIAC": "失忆患者",
   "stupid_express.config.initiate_fallback_options.KILLER": "随机杀手角色",
   "stupid_express.config.initiate_fallback_options.NEUTRAL": "其他中立角色",
+  "stupid_express.config.rolesSection.amnesiacSection": "失忆患者",
+  "stupid_express.config.rolesSection.amnesiacSection.bodiesGlowToAmnesiac": "尸体会对失忆患者发光",
+  "stupid_express.config.rolesSection.amnesiacSection.bodiesGlowToAmnesiac.desc": "如果此选项为开启状态，尸体会对失忆患者发光，表明可以拾取其角色",
+  "stupid_express.config.rolesSection.amnesiacSection.amnesiacGlowsDifferently": "失忆患者显示不同颜色",
+  "stupid_express.config.rolesSection.amnesiacSection.amnesiacGlowsDifferently.desc": "如果此选项为开启状态，对于拥有本能能力的玩家，失忆患者会以其角色颜色发光，这可能帮助杀手识别同伴的死亡",
 
   "stupid_express.config.modifiersSection": "附加词条",
   "stupid_express.config.modifiersSection.loversSection": "恋人",
@@ -60,5 +78,7 @@
   "stupid_express.config.modifiersSection.loversSection.loversWinWithKillers": "恋人与杀手共同获胜",
   "stupid_express.config.modifiersSection.loversSection.loversWinWithKillers.desc": "如果此选项为开启状态，其中一位恋人为杀手身份时，那么恋人与杀手会共同获胜",
   "stupid_express.config.modifiersSection.loversSection.loversWinWithCivilians": "恋人与平民共同获胜",
-  "stupid_express.config.modifiersSection.loversSection.loversWinWithCivilians.desc": "如果此选项为开启状态，且两位恋人的身份都为平民时，那么恋人与平民会共同获胜，否则他们必须被淘汰游戏才会结束"
+  "stupid_express.config.modifiersSection.loversSection.loversWinWithCivilians.desc": "如果此选项为开启状态，且两位恋人的身份都为平民时，那么恋人与平民会共同获胜，否则他们必须被淘汰游戏才会结束",
+  "stupid_express.config.modifiersSection.loversSection.loversGlowToEachother": "恋人彼此可见光效",
+  "stupid_express.config.modifiersSection.loversSection.loversGlowToEachother.desc": "恋人可以看到另一方的光效"
 }
