@@ -6,9 +6,10 @@
 
 #### Roles (as of right now):
 - **Amnesiac**: A neutral role that can take the role of any dead body it finds, though they have to choose wisely as the role sticks for the rest of the game.
-- **Arsonist**: A neutral role that is on their own team. Their goal is to douse all players and ignite them all. Igniting too early doesn't bode well for the Arsonist, however...
+- **Arsonist**: A neutral killer role that is on their own team. Their goal is to douse all players and ignite them all. Igniting too early doesn't bode well for the Arsonist, however...
 - **Necromancer**: A killer role that spawns when there can be two killers. When a killer is dead (not the necromancer), they have the opportunity to bring someone back from the dead to work for them.
-- **Avaricious**: A killer role that can spawn when there is more than one killer. Starts the game with 50 gold. Every minute, they perform a *payout*. Payouts give Avaricious players 30 gold for every player which is around them (excluding themselves).
+- **Avaricious** [[Sonicdude](https://github.com/TheRealSonicdude)]: A killer role that can spawn when there is more than one killer. Starts the game with 50 gold. Every minute, they perform a *payout*. Payouts give Avaricious players 30 gold for every player which is around them (excluding themselves).
+- **Thief** [[D1GQ](https://github.com/D1GQ)]: A neutral killer role who's goal is to steal items from other players and use them to be the last killer standing.
 
 #### Modifiers
 - **Lovers**: A pair that are life-linked, they may be a Civilian-Civilian or Killer-Civilian pair. Their goal is to be the last two standing, but they can win alongside the Civilians if they are both Civilians.
