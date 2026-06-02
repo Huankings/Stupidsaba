@@ -51,6 +51,8 @@ public class CustomWinnerComponent implements AutoSyncedComponent {
 
     public void reset() {
         this.winningTextId = null;
+        this.color = 0x000000;
+        this.winners = new ArrayList<>();
         sync();
     }
 

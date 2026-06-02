@@ -6,9 +6,11 @@ import dev.doctor4t.wathe.cca.PlayerShopComponent;
 import dev.doctor4t.wathe.client.gui.RoleAnnouncementTexts;
 import dev.doctor4t.wathe.compat.TrainVoicePlugin;
 import dev.doctor4t.wathe.entity.PlayerBodyEntity;
+import dev.doctor4t.wathe.record.GameRecordManager;
 import dev.doctor4t.wathe.util.AnnounceWelcomePayload;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
@@ -18,6 +20,7 @@ import org.agmas.harpymodloader.Harpymodloader;
 import org.agmas.harpymodloader.config.HarpyModLoaderConfig;
 import pro.fazeclan.river.stupid_express.cca.AbilityCooldownComponent;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
+import pro.fazeclan.river.stupid_express.record.StupidExpressReplay;
 import pro.fazeclan.river.stupid_express.role.necromancer.cca.NecromancerComponent;
 
 import java.util.ArrayList;
@@ -103,6 +106,13 @@ public class RevivalSelectionHandler {
                 );
             }
             TrainVoicePlugin.resetPlayer(revived.getUUID());
+            /*
+             * 死灵法师的关键事件是“哪具尸体被真正复活回来了”。
+             * 这里在复活与重新赋职都成功之后再记录，避免半途中断时出现假回放。
+             */
+            CompoundTag extra = new CompoundTag();
+            extra.putUUID("revived_player", revived.getUUID());
+            GameRecordManager.recordGlobalEvent(interacting.serverLevel(), StupidExpressReplay.NECROMANCER_REVIVED_EVENT, interacting, extra);
 
             return InteractionResult.CONSUME;
         }));

@@ -18,6 +18,9 @@
     ],
     "cardinal-components": [
       "pro.fazeclan.river.stupid_express.constants.SEComponents"
+    ],
+    "voicechat": [
+      "pro.fazeclan.river.stupid_express.voice.StupidExpressVoiceChatPlugin"
     ]
   },
   "custom": {
@@ -25,6 +28,9 @@
       "stupid_express:doused",
       "stupid_express:custom_winner",
       "stupid_express:cooldown",
+      "stupid_express:convener_player",
+      "stupid_express:convener_disguise",
+      "stupid_express:convener_momentum",
       "stupid_express:lovers",
       "stupid_express:necromancer"
     ]

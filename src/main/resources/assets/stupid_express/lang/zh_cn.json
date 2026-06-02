@@ -1,4 +1,6 @@
 {
+  "shop.purchase_failed": "购买失败",
+
   "category.custom.stupid_express.other": "其他",
 
   "announcement.goals.stupid_express.amnesiac": "从尸首上汲取回忆，穿戴其过往经历",
@@ -17,6 +19,9 @@
   "item.stupid_express.lighter.tooltip": "当此技能进入冷却时，表示是点燃的时机\n交互即可点燃所有已被浇湿的玩家",
   "death_reason.stupid_express.failed_ignite": "点火失败",
   "death_reason.stupid_express.ignited": "欲火焚身",
+  "replay.death.stupid_express.ignited.killed": "%s 被 %s 欲火焚身而亡",
+  "replay.death.stupid_express.failed_ignite.died": "%s 因点火失败而亡",
+  "replay.death.stupid_express.failed_ignite.killed": "%s 因点火失败而亡",
 
   "announcement.role.stupid_express.thief": "小偷",
   "announcement.goals.stupid_express.thief": "窃取武器，成为最后的幸存者",
@@ -34,9 +39,41 @@
   "hud.stupid_express.necromancer.no_possible_revive": "在使用能力之前，你的一名同伴必须先死亡",
   "hud.stupid_express.necromancer.cooldown": "你必须等待 %s 秒后才能尝试",
 
+  "announcement.goals.stupid_express.convener": "召集活人，让他们蒙上死者的面孔！",
+  "announcement.role.stupid_express.convener": "召集者",
+  "announcement.win.stupid_express.convener": "召集者胜利",
+  "game.win.stupid_express.convener": "召集者已经召集了足够的次数",
+  "hud.stupid_express.convener.select_body": "对尸体交互，召集所有存活玩家",
+  "hud.stupid_express.convener.cooldown": "你需要等待%s秒才能再次召集",
+  "hud.stupid_express.convener.current_disguise": "当前变形为:%s",
+  "hud.stupid_express.convener.counter_shield_layers": "你当前拥有%s层反伤护盾",
+  "hud.stupid_express.convener.waiting": "正在等待变形",
+  "hud.stupid_express.convener.locked": "当前还未解锁变形功能",
+  "hud.stupid_express.convener.tasks_to_next_shield": "当前需要完成%s个任务来获得一层护盾",
+  "hud.stupid_express.convener.progress": "当前需要召集%s/%s人",
+  "gui.stupid_express.page.previous": "上一页",
+  "gui.stupid_express.page.next": "下一页",
+  "death_reason.stupid_express.convener_counter_kill": "反伤护盾",
+  "replay.death.stupid_express.convener_counter_kill.killed": "%s 被 %s 的反伤护盾杀死",
+
   "announcement.goals.stupid_express.avaricious": "接近受害者以获取财富",
   "announcement.role.stupid_express.avaricious": "扒手",
   "hud.stupid_express.avaricious.payout_timer": "偷取倒计时 %s 秒",
+
+  "replay.global.stupid_express.amnesiac_role_stolen": "%s 摸取了 %s 的身份",
+  "replay.global.stupid_express.arsonist_doused": "%s 给 %s 浇上了汽油",
+  "replay.global.stupid_express.arsonist_lighter_cooldown_started": "%s 的打火机已进入冷却",
+  "replay.global.stupid_express.arsonist_lighter_cooldown_finished": "%s 的打火机冷却完毕",
+  "replay.global.stupid_express.avaricious_stole_coins": "%s 偷取了共 %s 金币",
+  "replay.global.stupid_express.necromancer_revived": "%s 复活了 %s",
+  "replay.global.stupid_express.thief_attempt": "%s 尝试偷取 %s 的东西",
+  "replay.global.stupid_express.thief_success": "%s 成功偷取了 %s 的 %s",
+  "replay.global.stupid_express.thief_fail": "%s 偷取 %s 的行动失败",
+  "replay.global.stupid_express.convener_summon": "%s 用 %s 的尸体发动了一次召集，当前进度%s/%s",
+  "replay.global.stupid_express.convener_counter_shield_gained": "%s 获得了一层反伤护盾，当前反伤护盾数量 %s",
+  "replay.global.stupid_express.convener_voodoo_immunity": "%s 免疫了来自 %s 的 %s 伤害",
+  "replay.shield_blocked.stupid_express.convener_counter_shield.by_item": "%s 的反伤护盾抵挡住了来自 %s 的 %s 的伤害",
+  "replay.shield_blocked.stupid_express.convener_counter_shield.item": "%s 的反伤护盾抵挡住了 %s 的伤害",
 
   "announcement.modifier.stupid_express.lovers": "恋人",
   "announcement.win.stupid_express.lovers": "恋人胜利",
@@ -70,6 +107,9 @@
   "stupid_express.config.rolesSection.amnesiacSection.bodiesGlowToAmnesiac.desc": "如果此选项为开启状态，尸体会对失忆患者发光，表明可以拾取其角色",
   "stupid_express.config.rolesSection.amnesiacSection.amnesiacGlowsDifferently": "失忆患者显示不同颜色",
   "stupid_express.config.rolesSection.amnesiacSection.amnesiacGlowsDifferently.desc": "如果此选项为开启状态，对于拥有本能能力的玩家，失忆患者会以其角色颜色发光，这可能帮助杀手识别同伴的死亡",
+  "stupid_express.config.rolesSection.convenerSection": "召集者",
+  "stupid_express.config.rolesSection.convenerSection.convenerCounterShieldEnabled": "任务反伤护盾",
+  "stupid_express.config.rolesSection.convenerSection.convenerCounterShieldEnabled.desc": "如果此选项为开启状态，召集者可以通过完成任务获得反伤护盾，并在右下角显示对应护盾 HUD",
 
   "stupid_express.config.modifiersSection": "附加词条",
   "stupid_express.config.modifiersSection.loversSection": "恋人",

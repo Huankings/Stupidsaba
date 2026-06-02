@@ -38,6 +38,8 @@ public class ThiefItemRules {
         list.add(getId(WatheItems.REVOLVER));
         list.add(getId(WatheItems.KNIFE));
         list.add(getId("kinswathe", "hunting_knife")); // Hunting Knife from Hunter role in kins wathe
+        list.add(getId("noellesroles", "throwing_axe"));//noellesroles throwing_axe
+        list.add(getId("noellesroles", "robber_pistol"));
         return list;
     }
 
@@ -53,7 +55,22 @@ public class ThiefItemRules {
         list.add(getId(WatheItems.FIRECRACKER));
         list.add(getId(WatheItems.BODY_BAG));
         list.add(getId(WatheItems.NOTE));
+        list.add(getId(WatheItems.BAT));
+        list.add(getId("noellesroles", "throwing_axe"));//noellesroles throwing_axe
+        list.add(getId("noellesroles", "robber_pistol"));
         list.add(getId("noellesroles", "master_key")); // Master Key from Conductor role in noellesroles
+        list.add(getId("noellesroles", "capture_device"));
+        list.add(getId("noellesroles", "defense_vial"));
+        list.add(getId("noellesroles", "delusion_vial"));
+        list.add(getId("noellesroles", "role_mine"));
+        list.add(getId("kinswathe", "hunting_knife"));
+        list.add(getId("kinswathe", "dream_imprint"));
+        list.add(getId("kinswathe", "knockout_drug"));
+        list.add(getId("kinswathe", "poison_injector"));
+        list.add(getId("kinswathe", "blowgun"));
+        list.add(getId("kinswathe", "pill"));
+        list.add(getId("starryexpress", "tape"));
+
         return list;
     }
 }

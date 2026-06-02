@@ -7,14 +7,17 @@ import dev.doctor4t.wathe.cca.PlayerShopComponent;
 import dev.doctor4t.wathe.client.gui.RoleAnnouncementTexts;
 import dev.doctor4t.wathe.entity.PlayerBodyEntity;
 import dev.doctor4t.wathe.index.WatheItems;
+import dev.doctor4t.wathe.record.GameRecordManager;
 import dev.doctor4t.wathe.util.AnnounceWelcomePayload;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import org.agmas.harpymodloader.Harpymodloader;
 import org.agmas.harpymodloader.events.ModdedRoleAssigned;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
+import pro.fazeclan.river.stupid_express.record.StupidExpressReplay;
 public class RoleSelectionHandler {
 
     public static void init() {
@@ -39,6 +42,13 @@ public class RoleSelectionHandler {
             gameWorldComponent.addRole(player, role);
             ModdedRoleAssigned.EVENT.invoker().assignModdedRole(player, role);
             playerShopComponent.setBalance(200);
+            /*
+             * 失忆患者的核心事件发生在“成功从尸体上取走身份”的这一刻，
+             * 因此这里直接记录尸体原主是谁，供回放显示“摸取了谁的身份”。
+             */
+            CompoundTag extra = new CompoundTag();
+            extra.putUUID("corpse_owner", victim.getPlayerUuid());
+            GameRecordManager.recordGlobalEvent(interacting.serverLevel(), StupidExpressReplay.AMNESIAC_ROLE_STOLEN_EVENT, interacting, extra);
             if (Harpymodloader.VANNILA_ROLES.contains(role)) {
                 if (role.equals(WatheRoles.VIGILANTE)) {
                     player.addItem(WatheItems.REVOLVER.getDefaultInstance());

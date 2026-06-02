@@ -49,6 +49,20 @@ public class StupidExpressConfig extends Config {
             public boolean amnesiacGlowsDifferently = true;
         }
 
+        public ConvenerSection convenerSection = new ConvenerSection();
+        public static class ConvenerSection extends ConfigSection {
+
+            /**
+             * 是否开启召集者“完成任务获得反伤护盾”的整套机制。
+             *
+             * <p>关闭后会同时禁用：
+             * 1. 完成任务累计护盾；
+             * 2. 反伤护盾保命与反杀；
+             * 3. 客户端右下角的两行护盾相关 HUD。</p>
+             */
+            public boolean convenerCounterShieldEnabled = true;
+        }
+
     }
 
     public ModifiersSection modifiersSection = new ModifiersSection();

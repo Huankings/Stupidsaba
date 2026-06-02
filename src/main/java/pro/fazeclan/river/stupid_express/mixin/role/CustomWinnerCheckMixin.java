@@ -30,13 +30,12 @@ public class CustomWinnerCheckMixin {
         if (!component.hasCustomWinner()) {
             return;
         }
-        var assumedWinning = component.getWinningTextId();
-        var winningTextId = detail.role().roleText.getString();
-        if (winningTextId.equals(assumedWinning)) {
-            cir.setReturnValue(true);
-        } else {
-            cir.setReturnValue(false);
-        }
+
+        // 旧逻辑是拿“结算分类文本”去对比自定义获胜 id，
+        // 对中立单独阵营来说并不可靠，因为服务端原始分类里他们通常还是被记成平民。
+        // 这里改成直接以 CustomWinnerComponent 写入的获胜 UUID 列表为准。
+        boolean isWinner = component.getWinners().stream().anyMatch(player -> player.getUUID().equals(uuid));
+        cir.setReturnValue(isWinner);
     }
 
 }

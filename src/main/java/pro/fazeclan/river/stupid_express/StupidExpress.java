@@ -5,9 +5,11 @@ import net.fabricmc.api.ModInitializer;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pro.fazeclan.river.stupid_express.communication.StupidExpressCommunicationManager;
 import pro.fazeclan.river.stupid_express.constants.SEItems;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
+import pro.fazeclan.river.stupid_express.record.StupidExpressReplay;
 
 public class StupidExpress implements ModInitializer {
 
@@ -22,9 +24,11 @@ public class StupidExpress implements ModInitializer {
 
         SERoles.init();
         SEModifiers.init();
+        StupidExpressCommunicationManager.init();
 
         // mod stuff
         SEItems.init();
+        StupidExpressReplay.init();
 
     }
 

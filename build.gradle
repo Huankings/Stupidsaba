@@ -4,6 +4,17 @@ plugins {
     id 'io.freefair.lombok' version '9.0.0'
 }
 
+/**
+ * 优先拾取 libs 目录里手动替换过的本地模组包。
+ * 这样在联调 Wathe 时，不需要把 jar 发布到 Maven，也不会继续误用旧版远程依赖。
+ */
+def findLatestLocalModJar(String prefix) {
+    return fileTree(dir: "libs", include: ["${prefix}-*.jar"])
+            .files
+            .sort { left, right -> right.lastModified() <=> left.lastModified() }
+            .find()
+}
+
 version = project.mod_version
 group = project.maven_group
 
@@ -63,7 +74,10 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modApi "dev.doctor4t:wathe:${project.wathe_version}"
+    def localWatheJar = findLatestLocalModJar("wathe")
+    // 这里优先走本地 jar，避免只替换了 libs 文件但 Gradle 仍然解析到旧版 Maven 依赖。
+    // 如果开发环境里暂时没有本地 jar，再回退到原来的远程坐标。
+    modApi(localWatheJar != null ? files(localWatheJar) : "dev.doctor4t:wathe:${project.wathe_version}")
     modApi "maven.modrinth:harpymodloader:${project.harpy_mod_loader_version}"
     modApi "maven.modrinth:noelles-roles-tmm:${project.noelles_roles_version}"
     modImplementation "org.ladysnake.cardinal-components-api:cardinal-components-base:${project.cca_version}"
@@ -120,7 +134,7 @@ java {
 
 jar {
     from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}" }
+        rename { "${it}_${project.archives_base_name}" }
     }
 }
 

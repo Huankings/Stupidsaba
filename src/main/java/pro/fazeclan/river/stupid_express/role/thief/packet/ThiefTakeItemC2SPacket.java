@@ -2,12 +2,15 @@ package pro.fazeclan.river.stupid_express.role.thief.packet;
 
 import dev.doctor4t.wathe.cca.GameWorldComponent;
 import dev.doctor4t.wathe.game.GameFunctions;
+import dev.doctor4t.wathe.record.GameRecordManager;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -17,6 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.cca.AbilityCooldownComponent;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
+import pro.fazeclan.river.stupid_express.record.StupidExpressReplay;
 import pro.fazeclan.river.stupid_express.role.thief.ThiefItemRules;
 
 import java.util.UUID;
@@ -37,7 +41,7 @@ public record ThiefTakeItemC2SPacket(UUID targetUuid) implements CustomPacketPay
         return ID;
     }
 
-    public final static int THIEF_COOLDOWN = 90 * 20;
+    public final static int THIEF_COOLDOWN = 80 * 20;
     
     public static void handle(ThiefTakeItemC2SPacket payload, ServerPlayNetworking.Context context) {
         ServerPlayer player = context.player();
@@ -56,6 +60,13 @@ public record ThiefTakeItemC2SPacket(UUID targetUuid) implements CustomPacketPay
         if (!validateStealAttempt(thief, target, abilityCooldownComponent)) {
             return;
         }
+        /*
+         * 只有在服务端验证通过、这次偷窃真正成立时，才记录“尝试偷取”事件。
+         * 这样可以避免冷却中、距离不够等无效交互也污染回放。
+         */
+        CompoundTag attemptExtra = new CompoundTag();
+        attemptExtra.putUUID("target_player", target.getUUID());
+        GameRecordManager.recordGlobalEvent(thief.serverLevel(), StupidExpressReplay.THIEF_ATTEMPT_EVENT, thief, attemptExtra);
 
         // Count stealable items first
         int count = 0;
@@ -67,10 +78,14 @@ public record ThiefTakeItemC2SPacket(UUID targetUuid) implements CustomPacketPay
         
         // If no item found, apply half cooldown and notify
         if (count == 0) {
-            abilityCooldownComponent.setCooldown(THIEF_COOLDOWN / 2);
+            abilityCooldownComponent.setCooldown(THIEF_COOLDOWN / 4);
+            abilityCooldownComponent.sync();
             thief.sendSystemMessage(
                 Component.literal("§e" + target.getName().getString() + "§c has no items you can steal!")
             );
+            CompoundTag failExtra = new CompoundTag();
+            failExtra.putUUID("target_player", target.getUUID());
+            GameRecordManager.recordGlobalEvent(thief.serverLevel(), StupidExpressReplay.THIEF_FAIL_EVENT, thief, failExtra);
 
             thief.playNotifySound(
                 SoundEvents.DYE_USE,
@@ -102,6 +117,18 @@ public record ThiefTakeItemC2SPacket(UUID targetUuid) implements CustomPacketPay
         // Take the item
         target.getInventory().items.set(slotIndex, ItemStack.EMPTY);
         
+        /*
+         * 这里先额外拷贝一份“纯记录用”的物品快照。
+         *
+         * 原版 Inventory#add 会直接修改传入的 ItemStack：
+         * 1. 如果成功塞进背包，count 可能会被扣到 0；
+         * 2. 变空后的 stack 再去取物品名时，就会退化成 AIR。
+         *
+         * 这正是之前回放里显示成“[空气]”的根因。
+         * 因此后续回放数据必须基于这份未被消费的快照来写。
+         */
+        ItemStack replaySnapshot = stolenItem.copy();
+
         // Give to thief
         if (!thief.getInventory().add(stolenItem)) {
             // Drop if inventory full
@@ -118,6 +145,11 @@ public record ThiefTakeItemC2SPacket(UUID targetUuid) implements CustomPacketPay
         // Success - full cooldown, message, sound
         abilityCooldownComponent.setCooldown(THIEF_COOLDOWN);
         abilityCooldownComponent.sync();
+        CompoundTag successExtra = new CompoundTag();
+        successExtra.putUUID("target_player", target.getUUID());
+        successExtra.putString("item", BuiltInRegistries.ITEM.getKey(replaySnapshot.getItem()).toString());
+        successExtra.putString("item_name", Component.Serializer.toJson(replaySnapshot.getHoverName(), thief.registryAccess()));
+        GameRecordManager.recordGlobalEvent(thief.serverLevel(), StupidExpressReplay.THIEF_SUCCESS_EVENT, thief, successExtra);
         thief.sendSystemMessage(
             Component.literal("§aYou stole from §e" + target.getName().getString())
         );

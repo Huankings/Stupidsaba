@@ -63,10 +63,21 @@ public class ArsonistInstinctMixin {
     @Inject(method = "getInstinctHighlight", at = @At("HEAD"), cancellable = true)
     private static void fakeArsonistGreenGlow(Entity target, CallbackInfoReturnable<Integer> cir) {
         var player = Minecraft.getInstance().player;
+        if (player == null) {
+            return;
+        }
+
         GameWorldComponent gameWorldComponent = GameWorldComponent.KEY.get(player.level());
         if (!(target instanceof Player targettedPlayer)) {
             return;
         }
+
+        // 召集者的本能透视对所有活人都应该统一走自己的流动色，
+        // 不能被纵火犯这个“伪装成绿色”的专用逻辑覆盖。
+        if (gameWorldComponent.isRole(player, SERoles.CONVENER)) {
+            return;
+        }
+
         if (!gameWorldComponent.isRole(targettedPlayer, SERoles.ARSONIST)) {
             return;
         }

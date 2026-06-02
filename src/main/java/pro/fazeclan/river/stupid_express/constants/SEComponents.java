@@ -9,6 +9,9 @@ import org.ladysnake.cca.api.v3.world.WorldComponentInitializer;
 import pro.fazeclan.river.stupid_express.cca.AbilityCooldownComponent;
 import pro.fazeclan.river.stupid_express.cca.CustomWinnerComponent;
 import pro.fazeclan.river.stupid_express.role.arsonist.cca.DousedPlayerComponent;
+import pro.fazeclan.river.stupid_express.role.convener.cca.ConvenerDisguiseComponent;
+import pro.fazeclan.river.stupid_express.role.convener.cca.ConvenerMomentumComponent;
+import pro.fazeclan.river.stupid_express.role.convener.cca.ConvenerPlayerComponent;
 import pro.fazeclan.river.stupid_express.role.necromancer.cca.NecromancerComponent;
 
 public class SEComponents implements EntityComponentInitializer, WorldComponentInitializer {
@@ -23,6 +26,15 @@ public class SEComponents implements EntityComponentInitializer, WorldComponentI
         registry.beginRegistration(Player.class, AbilityCooldownComponent.KEY)
                 .respawnStrategy(RespawnCopyStrategy.NEVER_COPY)
                 .end(AbilityCooldownComponent::new);
+        registry.beginRegistration(Player.class, ConvenerPlayerComponent.KEY)
+                .respawnStrategy(RespawnCopyStrategy.NEVER_COPY)
+                .end(ConvenerPlayerComponent::new);
+        registry.beginRegistration(Player.class, ConvenerDisguiseComponent.KEY)
+                .respawnStrategy(RespawnCopyStrategy.NEVER_COPY)
+                .end(ConvenerDisguiseComponent::new);
+        registry.beginRegistration(Player.class, ConvenerMomentumComponent.KEY)
+                .respawnStrategy(RespawnCopyStrategy.NEVER_COPY)
+                .end(ConvenerMomentumComponent::new);
     }
 
     @Override

@@ -1,4 +1,6 @@
 {
+  "shop.purchase_failed": "Purchase failed",
+
   "category.custom.stupid_express.other": "Others",
 
   "announcement.goals.stupid_express.amnesiac": "Steal a role from a body and act as that role!",
@@ -17,6 +19,9 @@
   "item.stupid_express.lighter.tooltip": "When this goes on cooldown, that indicates it is time to ignite.\nInteract with this to ignite all currently doused players\nwhen the time has come.",
   "death_reason.stupid_express.failed_ignite": "ignition misfire.",
   "death_reason.stupid_express.ignited": "being lit ablaze.",
+  "replay.death.stupid_express.ignited.killed": "%s was burned alive by %s",
+  "replay.death.stupid_express.failed_ignite.died": "%s died from a failed ignition attempt",
+  "replay.death.stupid_express.failed_ignite.killed": "%s died from a failed ignition attempt",
 
   "announcement.role.stupid_express.thief": "Thief!",
   "announcement.goals.stupid_express.thief": "Steal weapons and be the last one standing!",
@@ -34,9 +39,39 @@
   "hud.stupid_express.necromancer.no_possible_revive": "One of your killer cohorts must die before you revive!",
   "hud.stupid_express.necromancer.cooldown": "You must wait %ss before attempting this.",
 
+  "announcement.goals.stupid_express.convener": "Gather the living and make them wear the dead!",
+  "announcement.role.stupid_express.convener": "Convener!",
+  "announcement.win.stupid_express.convener": "The Convener Wins!",
+  "game.win.stupid_express.convener": "The Convener has summoned enough times to secure victory!",
+  "hud.stupid_express.convener.select_body": "Interact with the body to summon every living player",
+  "hud.stupid_express.convener.cooldown": "You must wait %ss before summoning again",
+  "hud.stupid_express.convener.current_disguise": "Current disguise: %s",
+  "hud.stupid_express.convener.waiting": "Waiting for a disguise",
+  "hud.stupid_express.convener.locked": "Disguise ability not unlocked yet",
+  "hud.stupid_express.convener.progress": "Summons needed: %s/%s",
+  "gui.stupid_express.page.previous": "Previous Page",
+  "gui.stupid_express.page.next": "Next Page",
+  "death_reason.stupid_express.convener_counter_kill": "counter shield",
+  "replay.death.stupid_express.convener_counter_kill.killed": "%s was killed by %s's counter shield",
+
   "announcement.goals.stupid_express.avaricious": "Be near victims and get rich!",
   "announcement.role.stupid_express.avaricious" : "Avaricious!",
   "hud.stupid_express.avaricious.payout_timer": "Payout in: %ss",
+
+  "replay.global.stupid_express.amnesiac_role_stolen": "%s stole %s's role",
+  "replay.global.stupid_express.arsonist_doused": "%s doused %s in oil",
+  "replay.global.stupid_express.arsonist_lighter_cooldown_started": "%s's lighter entered cooldown",
+  "replay.global.stupid_express.arsonist_lighter_cooldown_finished": "%s's lighter cooldown finished",
+  "replay.global.stupid_express.avaricious_stole_coins": "%s stole %s coins in total",
+  "replay.global.stupid_express.necromancer_revived": "%s revived %s",
+  "replay.global.stupid_express.thief_attempt": "%s tried to steal from %s",
+  "replay.global.stupid_express.thief_success": "%s successfully stole %s's %s",
+  "replay.global.stupid_express.thief_fail": "%s failed to steal from %s",
+  "replay.global.stupid_express.convener_summon": "%s used %s's body to summon everyone, progress %s/%s",
+  "replay.global.stupid_express.convener_counter_shield_gained": "%s gained a counter shield layer, now at %s",
+  "replay.global.stupid_express.convener_voodoo_immunity": "%s ignored %s's %s damage",
+  "replay.shield_blocked.stupid_express.convener_counter_shield.by_item": "%s's counter shield blocked damage from %s's %s",
+  "replay.shield_blocked.stupid_express.convener_counter_shield.item": "%s's counter shield blocked %s damage",
 
   "announcement.modifier.stupid_express.lovers": "Lover!",
   "announcement.win.stupid_express.lovers": "The Lovers Win!",
