@@ -41,7 +41,7 @@ public record ThiefTakeItemC2SPacket(UUID targetUuid) implements CustomPacketPay
         return ID;
     }
 
-    public final static int THIEF_COOLDOWN = 80 * 20;
+    public final static int THIEF_COOLDOWN = 70 * 20;
     
     public static void handle(ThiefTakeItemC2SPacket payload, ServerPlayNetworking.Context context) {
         ServerPlayer player = context.player();
@@ -78,7 +78,7 @@ public record ThiefTakeItemC2SPacket(UUID targetUuid) implements CustomPacketPay
         
         // If no item found, apply half cooldown and notify
         if (count == 0) {
-            abilityCooldownComponent.setCooldown(THIEF_COOLDOWN / 4);
+            abilityCooldownComponent.setCooldown(THIEF_COOLDOWN / 5);
             abilityCooldownComponent.sync();
             thief.sendSystemMessage(
                 Component.literal("§e" + target.getName().getString() + "§c has no items you can steal!")

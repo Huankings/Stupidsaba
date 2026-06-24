@@ -31,10 +31,14 @@ public class CustomWinnerCheckMixin {
             return;
         }
 
-        // 旧逻辑是拿“结算分类文本”去对比自定义获胜 id，
-        // 对中立单独阵营来说并不可靠，因为服务端原始分类里他们通常还是被记成平民。
-        // 这里改成直接以 CustomWinnerComponent 写入的获胜 UUID 列表为准。
-        boolean isWinner = component.getWinners().stream().anyMatch(player -> player.getUUID().equals(uuid));
+        /*
+         * 这里必须用 UUID 判断，不再从 CustomWinnerComponent 里取 Player 实体。
+         *
+         * 结算音效、回放胜负标记、TAB 结算页都可能在胜利者已经退出游戏后继续读取 didWin。
+         * 如果这里依赖 getWinners() 返回的在线实体列表，离线胜利者会被过滤掉，
+         * 最终被当成失败者或“其他阵营”处理。
+         */
+        boolean isWinner = component.isWinner(uuid);
         cir.setReturnValue(isWinner);
     }
 

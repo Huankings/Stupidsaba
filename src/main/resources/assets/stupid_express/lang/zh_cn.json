@@ -10,7 +10,7 @@
   "announcement.goals.stupid_express.arsonist": "将所有玩家浇湿后点燃以获胜",
   "announcement.role.stupid_express.arsonist": "纵火犯",
   "announcement.win.stupid_express.arsonist": "纵火犯胜利",
-  "game.win.stupid_express.arsonist": "纵火犯已将所有玩家浇湿并点燃了列车",
+  "game.win.stupid_express.arsonist": "熊熊烈火烧死了在场的所有玩家",
   "hud.stupid_express.arsonist.doused.true": "已浇湿",
   "hud.stupid_express.arsonist.doused.false": "未浇湿",
   "item.stupid_express.jerry_can": "汽油桶",
@@ -59,6 +59,7 @@
   "announcement.goals.stupid_express.avaricious": "接近受害者以获取财富",
   "announcement.role.stupid_express.avaricious": "扒手",
   "hud.stupid_express.avaricious.payout_timer": "偷取倒计时 %s 秒",
+  "hud.stupid_express.avaricious.expected_payout": "预计可偷取 %s 金币",
 
   "replay.global.stupid_express.amnesiac_role_stolen": "%s 摸取了 %s 的身份",
   "replay.global.stupid_express.arsonist_doused": "%s 给 %s 浇上了汽油",

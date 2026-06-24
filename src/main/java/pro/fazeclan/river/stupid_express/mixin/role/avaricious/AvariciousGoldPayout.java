@@ -18,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
 import pro.fazeclan.river.stupid_express.record.StupidExpressReplay;
 import pro.fazeclan.river.stupid_express.role.avaricious.AvariciousGoldHandler;
+import pro.fazeclan.river.stupid_express.role.avaricious.cca.AvariciousPayoutComponent;
 
 @Mixin(MurderGameMode.class)
 public class AvariciousGoldPayout {
@@ -30,14 +31,20 @@ public class AvariciousGoldPayout {
             ServerLevel serverWorld, GameWorldComponent gameWorldComponent, CallbackInfo ci
     ) {
         GameTimeComponent timeComponent = GameTimeComponent.KEY.get(serverWorld);
-        long time = timeComponent.time;
+        int time = timeComponent.time;
 
-        if (AvariciousGoldHandler.gameStartTime == -1) {
-            AvariciousGoldHandler.gameStartTime = time;
+        AvariciousPayoutComponent payoutComponent = AvariciousPayoutComponent.KEY.get(serverWorld);
+        if (!payoutComponent.hasTimerStartTime()) {
+            /*
+             * Wathe 的 GameTimeComponent 是“剩余时间”，会随对局推进递减。
+             * 这里在服务端首次进入扒手结算逻辑时记录起点，并同步给客户端 HUD。
+             * 后续发钱和 HUD 倒计时都按这个起点算 elapsed，保证显示时间和真实结算点一致。
+             */
+            payoutComponent.setTimerStartTime(time);
             return;
         }
 
-        long elapsed = time - AvariciousGoldHandler.gameStartTime;
+        int elapsed = payoutComponent.getTimerStartTime() - time;
 
         if (elapsed % AvariciousGoldHandler.TIMER_TICKS != 0) return;
 

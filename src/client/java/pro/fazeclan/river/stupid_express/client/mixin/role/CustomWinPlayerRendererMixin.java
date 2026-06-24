@@ -1,6 +1,5 @@
 package pro.fazeclan.river.stupid_express.client.mixin.role;
 
-import com.mojang.authlib.GameProfile;
 import dev.doctor4t.wathe.cca.GameRoundEndComponent;
 import dev.doctor4t.wathe.client.gui.RoleAnnouncementTexts;
 import dev.doctor4t.wathe.client.gui.RoleAnnouncementTexts.RoleAnnouncementText;
@@ -9,7 +8,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -66,30 +64,22 @@ public class CustomWinPlayerRendererMixin {
             return entry.role();
         }
 
-        Player player = getPlayer(entry.player());
-        if (player == null) {
-            return OTHER_TEAM;
-        }
-        
         CustomWinnerComponent customWinnerComponent = getCustomWinnerComponent();
-        
-        if (customWinnerComponent.getWinners().contains(player)) {
+
+        /*
+         * RoundEndData 里已经保存了回合结束瞬间的 GameProfile 快照，
+         * 其中 UUID 不会因为玩家退出游戏而丢失。
+         *
+         * 旧逻辑会先在 client.level.players() 里查当前在线 Player，
+         * 胜利者一旦退出就查不到实体，于是直接被归到 OTHER_TEAM。
+         * 这就是“单独中立胜利者退出后，右侧胜利职业栏为空”的直接原因。
+         * 因此这里必须直接使用结算快照里的 UUID 对比 CustomWinnerComponent 保存的 UUID 列表。
+         */
+        if (customWinnerComponent.isWinner(entry.player().getId())) {
             return WINNER_TEAM;
         } else {
             return OTHER_TEAM;
         }
-    }
-
-    private static Player getPlayer(GameProfile gameProfile) {
-        Minecraft client = Minecraft.getInstance();
-        if (client.level == null || client.player == null) return null;
-        
-        for (Player p : client.level.players()) {
-            if (p.getGameProfile().equals(gameProfile)) {
-                return p;
-            }
-        }
-        return null;
     }
 
     private static CustomWinnerComponent getCustomWinnerComponent() {

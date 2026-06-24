@@ -12,6 +12,7 @@
     "role.amnesiac.AmnesiacHudMixin",
     "role.arsonist.ArsonistHudMixin",
     "role.arsonist.ArsonistInstinctMixin",
+    "role.avaricious.AvariciousHudMixin",
     "role.convener.ConvenerHudMixin",
     "role.convener.ConvenerInstinctMixin",
     "role.convener.ConvenerInventoryMixin",

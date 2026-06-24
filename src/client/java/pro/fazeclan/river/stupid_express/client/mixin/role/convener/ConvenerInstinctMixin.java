@@ -46,7 +46,12 @@ public class ConvenerInstinctMixin {
         }
 
         GameWorldComponent gameWorldComponent = GameWorldComponent.KEY.get(player.level());
-        if (gameWorldComponent.isRole(player, SERoles.CONVENER) && instinctKeybind.isDown()) {
+        /*
+         * 召集者同样属于“按本能键才开启透视”的职业。
+         * 这里不直接读 KeyMapping#isDown()，避免召集者在 Wathe 已经切到开关模式后
+         * 仍然只能长按使用本能。
+         */
+        if (gameWorldComponent.isRole(player, SERoles.CONVENER) && WatheClient.isInstinctInputActive()) {
             cir.setReturnValue(true);
             cir.cancel();
         }

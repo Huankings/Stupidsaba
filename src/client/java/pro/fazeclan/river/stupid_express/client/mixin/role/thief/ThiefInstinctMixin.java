@@ -27,7 +27,12 @@ public class ThiefInstinctMixin {
         Player player = Minecraft.getInstance().player;
         GameWorldComponent gameWorldComponent = GameWorldComponent.KEY.get(player.level());
         if (gameWorldComponent.isRole(player, SERoles.THIEF)) {
-            if (instinctKeybind.isDown()) {
+            /*
+             * 盗贼是“按本能键才获得透视资格”的职业。
+             * 这里必须走 WatheClient 的统一输入入口，才能同时支持玩家个人的
+             * 开关模式和长按模式，而不是硬编码成 isDown() 长按。
+             */
+            if (WatheClient.isInstinctInputActive()) {
                 cir.setReturnValue(true);
                 cir.cancel();
             }

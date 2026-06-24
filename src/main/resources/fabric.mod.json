@@ -27,6 +27,7 @@
     "cardinal-components": [
       "stupid_express:doused",
       "stupid_express:custom_winner",
+      "stupid_express:avaricious_payout",
       "stupid_express:cooldown",
       "stupid_express:convener_player",
       "stupid_express:convener_disguise",

@@ -9,6 +9,7 @@ import org.ladysnake.cca.api.v3.world.WorldComponentInitializer;
 import pro.fazeclan.river.stupid_express.cca.AbilityCooldownComponent;
 import pro.fazeclan.river.stupid_express.cca.CustomWinnerComponent;
 import pro.fazeclan.river.stupid_express.role.arsonist.cca.DousedPlayerComponent;
+import pro.fazeclan.river.stupid_express.role.avaricious.cca.AvariciousPayoutComponent;
 import pro.fazeclan.river.stupid_express.role.convener.cca.ConvenerDisguiseComponent;
 import pro.fazeclan.river.stupid_express.role.convener.cca.ConvenerMomentumComponent;
 import pro.fazeclan.river.stupid_express.role.convener.cca.ConvenerPlayerComponent;
@@ -40,6 +41,7 @@ public class SEComponents implements EntityComponentInitializer, WorldComponentI
     @Override
     public void registerWorldComponentFactories(WorldComponentFactoryRegistry registry) {
         registry.register(CustomWinnerComponent.KEY, CustomWinnerComponent::new);
+        registry.register(AvariciousPayoutComponent.KEY, AvariciousPayoutComponent::new);
         registry.register(NecromancerComponent.KEY, NecromancerComponent::new);
     }
 }

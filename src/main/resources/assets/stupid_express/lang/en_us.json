@@ -57,6 +57,7 @@
   "announcement.goals.stupid_express.avaricious": "Be near victims and get rich!",
   "announcement.role.stupid_express.avaricious" : "Avaricious!",
   "hud.stupid_express.avaricious.payout_timer": "Payout in: %ss",
+  "hud.stupid_express.avaricious.expected_payout": "Expected payout: %s coins",
 
   "replay.global.stupid_express.amnesiac_role_stolen": "%s stole %s's role",
   "replay.global.stupid_express.arsonist_doused": "%s doused %s in oil",

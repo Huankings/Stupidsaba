@@ -27,7 +27,11 @@ public class ArsonistInstinctMixin {
         var player = Minecraft.getInstance().player;
         GameWorldComponent gameWorldComponent = GameWorldComponent.KEY.get(player.level());
         if (gameWorldComponent.isRole(player, SERoles.ARSONIST)) {
-            if (instinctKeybind.isDown()) {
+            /*
+             * 纵火犯的本能资格来自“本能键输入是否激活”。
+             * 统一入口会根据玩家自己的 /instinct key 设置，在开关和长按之间切换语义。
+             */
+            if (WatheClient.isInstinctInputActive()) {
                 cir.setReturnValue(true);
                 cir.cancel();
             }
