@@ -88,7 +88,7 @@ public class LoversLoopMixin {
             }
         }
 
-        // check if lovers can't win with civilians, and keep the game going
+        // 检查如果恋人不能和乘客阵营一起获胜的时候，则让游戏继续进行下去
         if (loversAlive
                 && !config.modifiersSection.loversSection.loversWinWithCivilians
                 && (winStatus == GameFunctions.WinStatus.KILLERS || winStatus == GameFunctions.WinStatus.PASSENGERS)) {
