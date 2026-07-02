@@ -46,7 +46,7 @@ public class LoversLoopMixin {
         var remainingLovers = remainingPlayers.stream().filter(p -> modifierComponent.isModifier(p, SEModifiers.LOVERS)).toList();
 
         if (remainingLovers.size() == 1) {
-            // if your lover disconnects... ggs
+            // 如果你的恋人不在了...很抱歉
             GameFunctions.killPlayer(remainingLovers.getFirst(), true, null, StupidExpress.id("broken_heart"));
             return;
         }
@@ -54,7 +54,7 @@ public class LoversLoopMixin {
         for (ServerPlayer player : remainingLovers) {
             loversAlive = true;
 
-            // check for only lovers win condition
+            // 检查是否满足“只有恋人获胜”的条件
             if (remainingPlayers.size() == remainingLovers.size()) {
                 var ce = CustomWinnerComponent.KEY.get(serverWorld);
                 ce.setWinningTextId(SEModifiers.LOVERS.identifier().getPath());
@@ -70,7 +70,7 @@ public class LoversLoopMixin {
                 return;
             }
 
-            // check for lovers with killers win condition
+            // 检查是否满足“与杀手恋人”获胜条件
             if (config.modifiersSection.loversSection.loversWinWithKillers) {
                 var lover = remainingLovers.stream().filter(p -> !p.equals(player)).toList().getFirst();
                 if (gameWorldComponent.isInnocent(player) && gameWorldComponent.isInnocent(lover)) {
