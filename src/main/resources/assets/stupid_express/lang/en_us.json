@@ -89,6 +89,7 @@
   "hud.stupid_express.lovers.in_love": "In love with %s!",
   "hud.stupid_express.lovers.notification": "You are in love with someone on the train!",
   "death_reason.stupid_express.broken_heart": "a broken heart.",
+  "replay.death.stupid_express.broken_heart.died": "%s died of a broken heart after %s's death",
 
   "announcement.goals.stupid_express.initiate": "Eliminate the other initiate in order to become a killer!",
   "announcement.role.stupid_express.initiate" : "Initiate!",

@@ -91,6 +91,7 @@
   "hud.stupid_express.lovers.in_love": "爱上了 %s",
   "hud.stupid_express.lovers.notification": "你爱上了列车上的某人！",
   "death_reason.stupid_express.broken_heart": "殉情而亡",
+  "replay.death.stupid_express.broken_heart.died": "%s 因为 %s 的死亡而一同殉情",
 
   "announcement.goals.stupid_express.initiate": "除掉同门即可晋升为杀手",
   "announcement.role.stupid_express.initiate": "初学者",

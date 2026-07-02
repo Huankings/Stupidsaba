@@ -5,6 +5,7 @@ import dev.doctor4t.wathe.cca.GameRoundEndComponent;
 import dev.doctor4t.wathe.cca.GameWorldComponent;
 import dev.doctor4t.wathe.game.GameFunctions;
 import dev.doctor4t.wathe.game.gamemode.MurderGameMode;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import org.agmas.harpymodloader.component.WorldModifierComponent;
@@ -59,7 +60,11 @@ public class LoversLoopMixin {
         for (ServerPlayer lover : remainingLovers) {
             UUID partnerUuid = pairComponent.getPartnerOrFallback(lover.getUUID(), remainingLoverUuids);
             if (partnerUuid == null || !remainingLoverUuids.contains(partnerUuid)) {
-                GameFunctions.killPlayer(lover, true, null, StupidExpress.id("broken_heart"));
+                CompoundTag extraDeathData = new CompoundTag();
+                if (partnerUuid != null) {
+                    extraDeathData.putUUID("broken_heart_partner", partnerUuid);
+                }
+                GameFunctions.killPlayer(lover, true, null, StupidExpress.id("broken_heart"), extraDeathData);
                 return;
             }
         }

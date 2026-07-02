@@ -41,6 +41,7 @@ public final class StupidExpressReplay {
     public static final net.minecraft.resources.ResourceLocation CONVENER_COUNTER_SHIELD_GAINED_EVENT = StupidExpress.id("convener_counter_shield_gained");
     public static final net.minecraft.resources.ResourceLocation CONVENER_VOODOO_IMMUNITY_EVENT = StupidExpress.id("convener_voodoo_immunity");
     public static final net.minecraft.resources.ResourceLocation CONVENER_COUNTER_SHIELD_SOURCE = StupidExpress.id("convener_counter_shield");
+    public static final net.minecraft.resources.ResourceLocation BROKEN_HEART_DEATH_REASON = StupidExpress.id("broken_heart");
 
     /**
      * 正在等待“打火机冷却结束”回放的纵火犯集合。
@@ -82,6 +83,7 @@ public final class StupidExpressReplay {
         ReplayRegistry.registerGlobalEventFormatter(CONVENER_COUNTER_SHIELD_GAINED_EVENT, StupidExpressReplayFormatters::formatConvenerCounterShieldGained);
         ReplayRegistry.registerGlobalEventFormatter(CONVENER_VOODOO_IMMUNITY_EVENT, StupidExpressReplayFormatters::formatConvenerVoodooImmunity);
         ReplayRegistry.registerShieldSourceFormatter(CONVENER_COUNTER_SHIELD_SOURCE, StupidExpressReplayFormatters::formatConvenerCounterShieldBlocked);
+        ReplayRegistry.registerDeathReasonFormatter(BROKEN_HEART_DEATH_REASON, StupidExpressReplayFormatters::formatBrokenHeartDeath);
     }
 
     private static void registerCooldownTracker() {

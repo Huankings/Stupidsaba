@@ -174,4 +174,18 @@ public final class StupidExpressReplayFormatters {
         }
         return Component.translatable("replay.shield_blocked.stupid_express.convener_counter_shield.item", victim, damageName);
     }
+
+    @Nullable
+    public static Component formatBrokenHeartDeath(GameRecordEvent event, GameRecordManager.MatchRecord match, ServerLevel world) {
+        Component victim = targetText(event, match);
+        if (victim == null) {
+            return null;
+        }
+
+        Component partner = playerFromKey(event, match, "broken_heart_partner");
+        if (partner == null) {
+            return Component.translatable("replay.death.unknown.died", victim);
+        }
+        return Component.translatable("replay.death.stupid_express.broken_heart.died", victim, partner);
+    }
 }
