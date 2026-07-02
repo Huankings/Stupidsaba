@@ -12,6 +12,7 @@ import org.agmas.harpymodloader.modifiers.Modifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pro.fazeclan.river.stupid_express.StupidExpress;
+import pro.fazeclan.river.stupid_express.modifier.lovers.LoversPairComponent;
 
 import java.util.List;
 
@@ -76,6 +77,7 @@ public class SEModifiers {
             if (!worldModifierComponent.isModifier(loverTwo, LOVERS)) {
                 worldModifierComponent.addModifier(loverTwo.getUUID(), LOVERS);
             }
+            LoversPairComponent.KEY.get(level).setRandomPair(lover.getUUID(), loverTwo.getUUID());
         }));
 
     }

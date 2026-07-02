@@ -16,6 +16,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.cca.CustomWinnerComponent;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
+import pro.fazeclan.river.stupid_express.modifier.lovers.LoversPairComponent;
+
+import java.util.List;
+import java.util.UUID;
 
 @Mixin(value = MurderGameMode.class, priority = 900)
 public class LoversLoopMixin {
@@ -41,14 +45,23 @@ public class LoversLoopMixin {
         var loversAlive = false;
 
         var modifierComponent = WorldModifierComponent.KEY.get(serverWorld);
+        var pairComponent = LoversPairComponent.KEY.get(serverWorld);
 
         var remainingPlayers = serverWorld.getPlayers(GameFunctions::isPlayerAliveAndSurvival);
         var remainingLovers = remainingPlayers.stream().filter(p -> modifierComponent.isModifier(p, SEModifiers.LOVERS)).toList();
+        var remainingLoverUuids = remainingLovers.stream().map(ServerPlayer::getUUID).toList();
 
-        if (remainingLovers.size() == 1) {
-            // 如果你的恋人不在了...很抱歉
-            GameFunctions.killPlayer(remainingLovers.getFirst(), true, null, StupidExpress.id("broken_heart"));
-            return;
+        /*
+         * 多对恋人不能再用“剩余恋人数量是否等于 1”判断殉情。
+         * 现在每个恋人都有自己的伴侣 UUID；只要自己的伴侣不在存活恋人列表里，
+         * 这个玩家就会因为失去恋人而死亡。
+         */
+        for (ServerPlayer lover : remainingLovers) {
+            UUID partnerUuid = pairComponent.getPartnerOrFallback(lover.getUUID(), remainingLoverUuids);
+            if (partnerUuid == null || !remainingLoverUuids.contains(partnerUuid)) {
+                GameFunctions.killPlayer(lover, true, null, StupidExpress.id("broken_heart"));
+                return;
+            }
         }
 
         for (ServerPlayer player : remainingLovers) {
@@ -58,7 +71,7 @@ public class LoversLoopMixin {
             if (remainingPlayers.size() == remainingLovers.size()) {
                 var ce = CustomWinnerComponent.KEY.get(serverWorld);
                 ce.setWinningTextId(SEModifiers.LOVERS.identifier().getPath());
-                ce.setWinners(remainingLovers.stream().map(sp -> serverWorld.getPlayerByUUID(sp.getUUID())).toList());
+                ce.setWinners(remainingLovers);
                 ce.setColor(SEModifiers.LOVERS.color());
                 ce.sync();
 
@@ -72,7 +85,10 @@ public class LoversLoopMixin {
 
             // 检查是否满足“与杀手恋人”获胜条件.
             if (config.modifiersSection.loversSection.loversWinWithKillers) {
-                var lover = remainingLovers.stream().filter(p -> !p.equals(player)).toList().getFirst();
+                var lover = stupidexpress$getLivingPartner(player, pairComponent, remainingLoverUuids, remainingLovers);
+                if (lover == null) {
+                    continue;
+                }
                 if (gameWorldComponent.isInnocent(player) && gameWorldComponent.isInnocent(lover)) {
                     continue;
                 }
@@ -95,6 +111,24 @@ public class LoversLoopMixin {
             ci.cancel();
         }
 
+    }
+
+    private static ServerPlayer stupidexpress$getLivingPartner(
+            ServerPlayer player,
+            LoversPairComponent pairComponent,
+            List<UUID> remainingLoverUuids,
+            List<ServerPlayer> remainingLovers
+    ) {
+        UUID partnerUuid = pairComponent.getPartnerOrFallback(player.getUUID(), remainingLoverUuids);
+        if (partnerUuid == null) {
+            return null;
+        }
+        for (ServerPlayer lover : remainingLovers) {
+            if (partnerUuid.equals(lover.getUUID())) {
+                return lover;
+            }
+        }
+        return null;
     }
 
 }

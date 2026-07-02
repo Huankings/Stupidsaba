@@ -5,6 +5,7 @@ import net.fabricmc.api.ModInitializer;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pro.fazeclan.river.stupid_express.command.StupidExpressCommand;
 import pro.fazeclan.river.stupid_express.communication.StupidExpressCommunicationManager;
 import pro.fazeclan.river.stupid_express.constants.SEItems;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
@@ -25,6 +26,7 @@ public class StupidExpress implements ModInitializer {
         SERoles.init();
         SEModifiers.init();
         StupidExpressCommunicationManager.init();
+        StupidExpressCommand.init();
 
         // mod stuff
         SEItems.init();

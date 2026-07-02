@@ -21,8 +21,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.client.StupidExpressClient;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
+import pro.fazeclan.river.stupid_express.modifier.lovers.LoversPairComponent;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Mixin(RoleNameRenderer.class)
@@ -45,20 +47,26 @@ public abstract class LoversHudMixin {
         var clientWorld = clientPlayer.level();
 
         var component = WorldModifierComponent.KEY.get(clientPlayer.level());
+        var pairComponent = LoversPairComponent.KEY.get(clientPlayer.level());
         var config = StupidExpress.CONFIG;
         if (component.isModifier(clientPlayer, SEModifiers.LOVERS)
                 && WatheClient.isPlayerAliveAndInSurvival()) {
 
-            // 修复说明：
-            // 这里显式复制一份恋人列表，不直接修改组件返回的集合。
-            // 这样既能安全移除自己，也能避免组件如果返回内部集合时被 HUD 渲染代码误改。
+            /*
+             * 多对恋人时，不能再把“所有拥有 LOVERS 的玩家”都显示成伴侣。
+             * 这里先从配对组件里取自己的唯一伴侣；
+             * 如果是旧式单对数据且组件缺失，则 getPartnerOrFallback 会在只有两名 LOVERS 时自动兜底。
+             */
             var lovers = new ArrayList<>(component.getAllWithModifier(SEModifiers.LOVERS));
-            lovers.remove(clientPlayer.getUUID());
+            UUID partnerUuid = pairComponent.getPartnerOrFallback(clientPlayer.getUUID(), lovers);
+            if (partnerUuid == null) {
+                return;
+            }
 
             var textYPos = context.guiHeight() - 12;
             var textXPos = 18;
 
-            for (UUID uuid : lovers) {
+            for (UUID uuid : List.of(partnerUuid)) {
                 context.pose().pushPose();
 
                 var loverInfo = clientPlayer.connection.getPlayerInfo(uuid);
@@ -117,6 +125,7 @@ public abstract class LoversHudMixin {
         }
         var clientLevel = clientPlayer.level();
         var component = WorldModifierComponent.KEY.get(clientLevel);
+        var pairComponent = LoversPairComponent.KEY.get(clientLevel);
         if (StupidExpressClient.target == null) {
             return;
         }
@@ -126,7 +135,12 @@ public abstract class LoversHudMixin {
         var config = StupidExpress.CONFIG;
         if (WatheClient.isPlayerAliveAndInSurvival()
                 && !config.modifiersSection.loversSection.loversKnowImmediately
-                && component.isModifier(clientPlayer, SEModifiers.LOVERS)) {
+                && component.isModifier(clientPlayer, SEModifiers.LOVERS)
+                && pairComponent.arePartnersOrFallback(
+                        clientPlayer.getUUID(),
+                        StupidExpressClient.target.getUUID(),
+                        component.getAllWithModifier(SEModifiers.LOVERS)
+                )) {
             stupidexpress$renderLoversHud(renderer, context, Component.translatable("hud.stupid_express.lovers.partner"));
         } else if (WatheClient.isPlayerSpectatingOrCreative()) {
             // 修复说明：
@@ -134,12 +148,12 @@ public abstract class LoversHudMixin {
             // 这里我们直接从源头修：如果观战目标的另一位恋人还没同步到当前客户端，
             // 就先跳过这一帧，不再执行 null.getName() 这种会导致崩端的调用。
             var lovers = new ArrayList<>(component.getAllWithModifier(SEModifiers.LOVERS));
-            lovers.remove(StupidExpressClient.target.getUUID());
-            for (UUID uuid : lovers) {
-                var loverPlayer = clientLevel.getPlayerByUUID(uuid);
-                if (loverPlayer == null) {
-                    continue;
-                }
+            UUID partnerUuid = pairComponent.getPartnerOrFallback(StupidExpressClient.target.getUUID(), lovers);
+            if (partnerUuid == null) {
+                return;
+            }
+            var loverPlayer = clientLevel.getPlayerByUUID(partnerUuid);
+            if (loverPlayer != null) {
                 stupidexpress$renderLoversHud(renderer, context, Component.translatable(
                         "hud.stupid_express.lovers.in_love",
                         loverPlayer.getName()

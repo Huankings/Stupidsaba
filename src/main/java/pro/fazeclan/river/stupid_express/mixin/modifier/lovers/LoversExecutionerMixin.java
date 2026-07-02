@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
+import pro.fazeclan.river.stupid_express.modifier.lovers.LoversPairComponent;
 
 import java.util.List;
 import java.util.UUID;
@@ -26,9 +27,15 @@ public class LoversExecutionerMixin {
     private void excludeLoversIfLover(CallbackInfo ci, @Local(name = "innocentPlayers") List<UUID> innocentPlayers) {
 
         var modifierComponent = WorldModifierComponent.KEY.get(player.level());
+        var pairComponent = LoversPairComponent.KEY.get(player.level());
         innocentPlayers.removeIf(target ->
                 modifierComponent.isModifier(player, SEModifiers.LOVERS)
                 && modifierComponent.isModifier(target, SEModifiers.LOVERS)
+                && pairComponent.arePartnersOrFallback(
+                        player.getUUID(),
+                        target,
+                        modifierComponent.getAllWithModifier(SEModifiers.LOVERS)
+                )
         );
 
     }

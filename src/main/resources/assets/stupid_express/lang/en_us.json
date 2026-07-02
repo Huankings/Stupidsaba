@@ -3,6 +3,12 @@
 
   "category.custom.stupid_express.other": "Others",
 
+  "commands.stupid_express.set_lovers.same_player": "A player cannot be assigned as their own lover",
+  "commands.stupid_express.set_lovers.success": "Assigned %s and %s as lovers for the next round",
+  "commands.stupid_express.remove_lovers.not_found": "%s does not have a lover assigned by a Stupid Express command",
+  "commands.stupid_express.remove_lovers.pending_success": "Removed pending lover pair: %s and %s",
+  "commands.stupid_express.remove_lovers.active_success": "Removed active lover pair: %s and %s",
+
   "announcement.goals.stupid_express.amnesiac": "Steal a role from a body and act as that role!",
   "announcement.role.stupid_express.amnesiac": "Amnesiac!",
   "hud.stupid_express.amnesiac.select_body": "Interact to steal the role!",

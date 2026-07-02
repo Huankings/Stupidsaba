@@ -4,6 +4,7 @@
   "package": "pro.fazeclan.river.stupid_express.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "modifier.lovers.ForcedLoversAssignMixin",
     "modifier.lovers.LoversLoopMixin",
     "role.CustomWinnerCheckMixin",
     "role.CustomWinnerResetMixin",
