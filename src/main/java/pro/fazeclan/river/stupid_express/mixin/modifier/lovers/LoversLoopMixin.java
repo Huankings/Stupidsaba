@@ -70,7 +70,7 @@ public class LoversLoopMixin {
                 return;
             }
 
-            // 检查是否满足“与杀手恋人”获胜条件
+            // 检查是否满足“与杀手恋人”获胜条件.
             if (config.modifiersSection.loversSection.loversWinWithKillers) {
                 var lover = remainingLovers.stream().filter(p -> !p.equals(player)).toList().getFirst();
                 if (gameWorldComponent.isInnocent(player) && gameWorldComponent.isInnocent(lover)) {
