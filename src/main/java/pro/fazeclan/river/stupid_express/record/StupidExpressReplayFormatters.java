@@ -188,4 +188,16 @@ public final class StupidExpressReplayFormatters {
         }
         return Component.translatable("replay.death.stupid_express.broken_heart.died", victim, partner);
     }
+
+    @Nullable
+    public static Component formatDualActiveStarted(GameRecordEvent event, GameRecordManager.MatchRecord match, ServerLevel world) {
+        Component actor = actorText(event, match);
+        return actor == null ? null : Component.translatable("replay.global.stupid_express.dual_active_started", actor);
+    }
+
+    @Nullable
+    public static Component formatDualActiveTimeoutDeath(GameRecordEvent event, GameRecordManager.MatchRecord match, ServerLevel world) {
+        Component victim = targetText(event, match);
+        return victim == null ? null : Component.translatable("replay.death.stupid_express.dual_active_timeout.died", victim);
+    }
 }

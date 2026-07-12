@@ -8,6 +8,7 @@ import org.ladysnake.cca.api.v3.world.WorldComponentFactoryRegistry;
 import org.ladysnake.cca.api.v3.world.WorldComponentInitializer;
 import pro.fazeclan.river.stupid_express.cca.AbilityCooldownComponent;
 import pro.fazeclan.river.stupid_express.cca.CustomWinnerComponent;
+import pro.fazeclan.river.stupid_express.modifier.dual_personality.DualPersonalityComponent;
 import pro.fazeclan.river.stupid_express.modifier.lovers.LoversPairComponent;
 import pro.fazeclan.river.stupid_express.role.arsonist.cca.DousedPlayerComponent;
 import pro.fazeclan.river.stupid_express.role.avaricious.cca.AvariciousPayoutComponent;
@@ -45,5 +46,7 @@ public class SEComponents implements EntityComponentInitializer, WorldComponentI
         registry.register(AvariciousPayoutComponent.KEY, AvariciousPayoutComponent::new);
         registry.register(NecromancerComponent.KEY, NecromancerComponent::new);
         registry.register(LoversPairComponent.KEY, LoversPairComponent::new);
+        // 双重人格配对和倒计时是“整局共享状态”，所以注册为世界组件，而不是玩家组件。
+        registry.register(DualPersonalityComponent.KEY, DualPersonalityComponent::new);
     }
 }

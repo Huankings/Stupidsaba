@@ -8,6 +8,7 @@ import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
+import pro.fazeclan.river.stupid_express.client.modifier.dual_personality.DualPersonalityClientState;
 import pro.fazeclan.river.stupid_express.role.convener.cca.ConvenerDisguiseComponent;
 
 import java.util.UUID;
@@ -29,11 +30,27 @@ public final class ConvenerDisguiseResolver {
      */
     public static @Nullable PlayerSkin resolveDisguiseSkin(AbstractClientPlayer player) {
         ConvenerDisguiseComponent disguiseComponent = ConvenerDisguiseComponent.KEY.get(player);
-        if (!disguiseComponent.isDisguised()) {
-            return null;
+        if (disguiseComponent.isDisguised()) {
+            /*
+             * 用户确认的优先级是“已有变形优先于双重人格副人格外观”。
+             * 所以召集者等主动伪装存在时，先返回伪装目标皮肤，不再继续查双重人格。
+             */
+            UUID disguiseUuid = disguiseComponent.getDisguiseUuid();
+            if (disguiseUuid == null) {
+                return null;
+            }
+            return resolveSkinForUuid(player, disguiseUuid);
         }
 
-        UUID disguiseUuid = disguiseComponent.getDisguiseUuid();
+        UUID dualPersonalitySource = DualPersonalityClientState.resolveSubAppearanceSource(player);
+        if (dualPersonalitySource != null) {
+            return resolveSkinForUuid(player, dualPersonalitySource);
+        }
+
+        return null;
+    }
+
+    private static @Nullable PlayerSkin resolveSkinForUuid(AbstractClientPlayer player, UUID disguiseUuid) {
         if (disguiseUuid == null) {
             return null;
         }
@@ -62,6 +79,16 @@ public final class ConvenerDisguiseResolver {
         }
 
         return null;
+    }
+
+    public static @Nullable Component resolveDualPersonalityName(Player viewer) {
+        /*
+         * 准星中央名牌和皮肤替换必须读同一份外观来源。
+         * 副人格哪怕轮换成活跃人格，身份上仍是副人格；
+         * 所以只要本局仍处于 ACTIVE 且没有其它变形优先级，就显示主人格名字。
+         */
+        UUID dualPersonalitySource = DualPersonalityClientState.resolveSubAppearanceSource(viewer);
+        return dualPersonalitySource == null ? null : resolveDisguiseName(viewer, dualPersonalitySource);
     }
 
     /**

@@ -40,6 +40,7 @@ public final class StupidExpressReplay {
     public static final net.minecraft.resources.ResourceLocation CONVENER_SUMMON_EVENT = StupidExpress.id("convener_summon");
     public static final net.minecraft.resources.ResourceLocation CONVENER_COUNTER_SHIELD_GAINED_EVENT = StupidExpress.id("convener_counter_shield_gained");
     public static final net.minecraft.resources.ResourceLocation CONVENER_VOODOO_IMMUNITY_EVENT = StupidExpress.id("convener_voodoo_immunity");
+    public static final net.minecraft.resources.ResourceLocation DUAL_ACTIVE_STARTED_EVENT = StupidExpress.id("dual_active_started");
     public static final net.minecraft.resources.ResourceLocation CONVENER_COUNTER_SHIELD_SOURCE = StupidExpress.id("convener_counter_shield");
     public static final net.minecraft.resources.ResourceLocation BROKEN_HEART_DEATH_REASON = StupidExpress.id("broken_heart");
 
@@ -82,8 +83,10 @@ public final class StupidExpressReplay {
         ReplayRegistry.registerGlobalEventFormatter(CONVENER_SUMMON_EVENT, StupidExpressReplayFormatters::formatConvenerSummon);
         ReplayRegistry.registerGlobalEventFormatter(CONVENER_COUNTER_SHIELD_GAINED_EVENT, StupidExpressReplayFormatters::formatConvenerCounterShieldGained);
         ReplayRegistry.registerGlobalEventFormatter(CONVENER_VOODOO_IMMUNITY_EVENT, StupidExpressReplayFormatters::formatConvenerVoodooImmunity);
+        ReplayRegistry.registerGlobalEventFormatter(DUAL_ACTIVE_STARTED_EVENT, StupidExpressReplayFormatters::formatDualActiveStarted);
         ReplayRegistry.registerShieldSourceFormatter(CONVENER_COUNTER_SHIELD_SOURCE, StupidExpressReplayFormatters::formatConvenerCounterShieldBlocked);
         ReplayRegistry.registerDeathReasonFormatter(BROKEN_HEART_DEATH_REASON, StupidExpressReplayFormatters::formatBrokenHeartDeath);
+        ReplayRegistry.registerDeathReasonFormatter(pro.fazeclan.river.stupid_express.modifier.dual_personality.DualPersonalityManager.DOUBLE_ACTIVE_TIMEOUT_DEATH_REASON, StupidExpressReplayFormatters::formatDualActiveTimeoutDeath);
     }
 
     private static void registerCooldownTracker() {

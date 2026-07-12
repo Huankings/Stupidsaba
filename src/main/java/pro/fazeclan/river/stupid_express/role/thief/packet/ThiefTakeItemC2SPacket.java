@@ -20,6 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.cca.AbilityCooldownComponent;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
+import pro.fazeclan.river.stupid_express.modifier.dual_personality.DualPersonalityActionGuard;
 import pro.fazeclan.river.stupid_express.record.StupidExpressReplay;
 import pro.fazeclan.river.stupid_express.role.thief.ThiefItemRules;
 
@@ -170,6 +171,9 @@ public record ThiefTakeItemC2SPacket(UUID targetUuid) implements CustomPacketPay
         // Role check
         GameWorldComponent gameComponent = GameWorldComponent.KEY.get(thief.level());
         if (!gameComponent.isRole(thief, SERoles.THIEF)) return false;
+
+        // 双重人格的休眠人格虽然会被 Wathe 当作“存活”，但玩法上不能主动操作能力。
+        if (thief instanceof ServerPlayer serverThief && DualPersonalityActionGuard.isDormant(serverThief)) return false;
 
         // Game state checks
         if (GameFunctions.isPlayerEliminated(target) || 

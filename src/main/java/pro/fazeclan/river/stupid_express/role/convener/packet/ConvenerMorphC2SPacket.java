@@ -9,6 +9,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
+import pro.fazeclan.river.stupid_express.modifier.dual_personality.DualPersonalityActionGuard;
 import pro.fazeclan.river.stupid_express.role.convener.cca.ConvenerDisguiseComponent;
 import pro.fazeclan.river.stupid_express.role.convener.cca.ConvenerPlayerComponent;
 
@@ -40,6 +41,11 @@ public record ConvenerMorphC2SPacket(UUID targetUuid) implements CustomPacketPay
     private static void handle(ConvenerMorphC2SPacket payload, ServerPlayNetworking.Context context) {
         context.server().execute(() -> {
             ServerPlayer player = context.player();
+            if (DualPersonalityActionGuard.isDormant(player)) {
+                // 休眠人格不能通过直接发变形选择包绕过旁观限制。
+                return;
+            }
+
             GameWorldComponent gameWorldComponent = GameWorldComponent.KEY.get(player.level());
             if (!gameWorldComponent.isRole(player, SERoles.CONVENER)) {
                 return;

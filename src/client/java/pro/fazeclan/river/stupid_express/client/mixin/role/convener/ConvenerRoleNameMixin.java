@@ -34,7 +34,8 @@ public class ConvenerRoleNameMixin {
 
         ConvenerDisguiseComponent disguiseComponent = ConvenerDisguiseComponent.KEY.get(instance);
         if (!disguiseComponent.isDisguised()) {
-            return original.call(instance);
+            Component dualPersonalityName = ConvenerDisguiseResolver.resolveDualPersonalityName(instance);
+            return dualPersonalityName != null ? dualPersonalityName : original.call(instance);
         }
 
         // 准星下的人名如果不一起替换，玩家会看到“脸变了但名字没变”，

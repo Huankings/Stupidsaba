@@ -4,6 +4,12 @@
   "package": "pro.fazeclan.river.stupid_express.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "modifier.dual_personality.DualPersonalityAssignMixin",
+    "modifier.dual_personality.DualPersonalityDeathMixin",
+    "modifier.dual_personality.DualPersonalityItemPickupMixin",
+    "modifier.dual_personality.DualPersonalityKnifeCooldownMixin",
+    "modifier.dual_personality.DualPersonalityLoopMixin",
+    "modifier.dual_personality.DualPersonalityRevolverPenaltyMixin",
     "modifier.lovers.ForcedLoversAssignMixin",
     "modifier.lovers.LoversLoopMixin",
     "role.CustomWinnerCheckMixin",

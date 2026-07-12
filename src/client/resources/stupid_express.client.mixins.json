@@ -4,6 +4,13 @@
   "package": "pro.fazeclan.river.stupid_express.client.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "modifier.dual_personality.DualPersonalityDormantInputMixin",
+    "modifier.dual_personality.DualPersonalityBodyRendererMixin",
+    "modifier.dual_personality.DualPersonalityHudMixin",
+    "modifier.dual_personality.DualPersonalityInstinctMixin",
+    "modifier.dual_personality.DualPersonalityMovementSpeedMixin",
+    "modifier.dual_personality.DualPersonalityRoleNameMixin",
+    "modifier.dual_personality.DualPersonalityTimeRendererMixin",
     "modifier.lovers.LoversHudMixin",
     "modifier.lovers.LoversInstinctMixin",
     "role.CustomWinnerAnnouncementMixin",

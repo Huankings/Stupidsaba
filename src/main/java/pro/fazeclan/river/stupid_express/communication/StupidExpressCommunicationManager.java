@@ -5,14 +5,15 @@ import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.OutgoingChatMessage;
 import net.minecraft.network.chat.PlayerChatMessage;
 import net.minecraft.server.level.ServerPlayer;
+import pro.fazeclan.river.stupid_express.modifier.dual_personality.DualPersonalityCommunicationHelper;
 import pro.fazeclan.river.stupid_express.role.convener.ConvenerCommunicationHelper;
 
 /**
  * StupidExpress 的统一通讯限制管理器。
  *
- * <p>当前先接入两类限制：
- * 1. 召集者召集后的“限时变形活人”语音互相隔离；
- * 2. 这些玩家的普通聊天改为“只对特定观察者可见”。
+ * <p>当前接入两类限制：
+ * 1. 召集者召集后的“限时变形活人”语音互相隔离，并限制普通聊天可见范围；
+ * 2. 双重人格普通轮换阶段，休眠人格只能和另一人格/非存活玩家沟通。
  *
  * <p>后续如果还要加入类似“沉默者、禁言者、只能死者听见”等扩展职业规则，
  * 可以继续在这里集中挂接，而不是分别去改 VoiceChat 插件和 Fabric 事件注册点。</p>
@@ -32,7 +33,9 @@ public final class StupidExpressCommunicationManager {
      * 当前是否应该阻断某一对玩家之间的语音传递。
      */
     public static boolean shouldBlockVoiceBetween(ServerPlayer sender, ServerPlayer receiver) {
-        return ConvenerCommunicationHelper.shouldBlockVoiceBetween(sender, receiver);
+        // 双重人格先判断，因为它还会配合 VoiceChat 插件补发静态语音；召集者规则随后兜底。
+        return DualPersonalityCommunicationHelper.shouldBlockVoiceBetween(sender, receiver)
+                || ConvenerCommunicationHelper.shouldBlockVoiceBetween(sender, receiver);
     }
 
     /**
@@ -46,6 +49,16 @@ public final class StupidExpressCommunicationManager {
             ServerPlayer sender,
             ChatType.Bound params
     ) {
+        /*
+         * 双重人格聊天先做 actionbar 桥接，再决定是否取消原版广播。
+         * 如果发送者是休眠人格，后续由 redirectDormantChat 手动发给允许接收的人。
+         */
+        DualPersonalityCommunicationHelper.bridgeChatIfNeeded(message, sender);
+        if (DualPersonalityCommunicationHelper.shouldRestrictChat(sender)) {
+            DualPersonalityCommunicationHelper.redirectDormantChat(message, sender, params);
+            return false;
+        }
+
         if (!ConvenerCommunicationHelper.shouldRestrictChat(sender)) {
             return true;
         }
