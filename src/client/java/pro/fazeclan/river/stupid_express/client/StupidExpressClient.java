@@ -7,6 +7,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
+import pro.fazeclan.river.stupid_express.client.instinct.StupidExpressInstinctHandlers;
 import pro.fazeclan.river.stupid_express.client.ui.common.PagedPlayerScreenState;
 import pro.fazeclan.river.stupid_express.client.modifier.dual_personality.DualPersonalityClientState;
 import pro.fazeclan.river.stupid_express.client.modifier.dual_personality.DualPersonalityKeybinds;
@@ -19,6 +20,8 @@ public class StupidExpressClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        StupidExpressInstinctHandlers.register();
+
         // 分页缓存只在当前对局内生效。
         // 开局、停局、结算结束时统一清空，避免上一把浏览过的页码残留到下一把。
         GameEvents.ON_GAME_START.register(gameMode -> {
