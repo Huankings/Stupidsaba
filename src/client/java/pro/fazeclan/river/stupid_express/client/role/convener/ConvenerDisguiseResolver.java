@@ -1,6 +1,6 @@
 package pro.fazeclan.river.stupid_express.client.role.convener;
 
-import dev.doctor4t.wathe.client.WatheClient;
+import dev.doctor4t.wathe.api.client.appearance.PlayerAppearanceApi;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -50,35 +50,17 @@ public final class ConvenerDisguiseResolver {
         return null;
     }
 
-    private static @Nullable PlayerSkin resolveSkinForUuid(AbstractClientPlayer player, UUID disguiseUuid) {
+    public static @Nullable PlayerSkin resolveSkinForUuid(AbstractClientPlayer player, UUID disguiseUuid) {
         if (disguiseUuid == null) {
             return null;
         }
 
-        Minecraft client = Minecraft.getInstance();
-
-        // 优先处理“伪装成本地玩家自己”的情况，避免 UUID 命中后又继续往外找导致错皮。
-        if (client.player != null && disguiseUuid.equals(client.player.getUUID())) {
-            return client.player.getSkin();
-        }
-
-        // 目标玩家如果当前就在客户端世界里，直接取实时实体皮肤最准确。
-        Player levelPlayer = player.level().getPlayerByUUID(disguiseUuid);
-        if (levelPlayer instanceof AbstractClientPlayer abstractClientPlayer) {
-            return abstractClientPlayer.getSkin();
-        }
-
-        // 否则退回玩家列表缓存，这样死亡、掉线或暂未加载进本地世界时也能继续显示。
-        PlayerInfo info = resolvePlayerInfo(disguiseUuid);
-        if (info != null && info.getSkin() != null) {
-            return info.getSkin();
-        }
-
-        if (WatheClient.PLAYER_ENTRIES_CACHE != null && WatheClient.PLAYER_ENTRIES_CACHE.containsKey(disguiseUuid)) {
-            return WatheClient.PLAYER_ENTRIES_CACHE.get(disguiseUuid).getSkin();
-        }
-
-        return null;
+        /*
+         * 这里必须读取“UUID 的原始皮肤”，不能读取目标玩家实体当前 getSkin()。
+         * 现在 getSkin() 已经由 Wathe 的外观 API 接管，如果 A 伪装成 B、B 又被其它规则覆盖，
+         * 直接读实体会把 B 的当前伪装再次套进 A，造成递归或优先级串线。
+         */
+        return PlayerAppearanceApi.resolveOriginalSkinTextures(disguiseUuid, true);
     }
 
     public static @Nullable Component resolveDualPersonalityName(Player viewer) {

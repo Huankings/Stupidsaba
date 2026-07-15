@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pro.fazeclan.river.stupid_express.command.StupidExpressCommand;
 import pro.fazeclan.river.stupid_express.communication.StupidExpressCommunicationManager;
+import pro.fazeclan.river.stupid_express.appearance.StupidExpressBodyAppearanceHandlers;
 import pro.fazeclan.river.stupid_express.constants.SEItems;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
@@ -25,6 +26,7 @@ public class StupidExpress implements ModInitializer {
 
         SERoles.init();
         SEModifiers.init();
+        StupidExpressBodyAppearanceHandlers.register();
         StupidExpressCommunicationManager.init();
         StupidExpressCommand.init();
 

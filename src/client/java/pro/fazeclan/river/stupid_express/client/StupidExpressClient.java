@@ -7,6 +7,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
+import pro.fazeclan.river.stupid_express.client.appearance.StupidExpressAppearanceHandlers;
 import pro.fazeclan.river.stupid_express.client.instinct.StupidExpressInstinctHandlers;
 import pro.fazeclan.river.stupid_express.client.role.convener.ConvenerMoodHud;
 import pro.fazeclan.river.stupid_express.client.ui.common.PagedPlayerScreenState;
@@ -23,6 +24,7 @@ public class StupidExpressClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         StupidExpressInstinctHandlers.register();
+        StupidExpressAppearanceHandlers.register();
         ConvenerMoodHud.register();
         DualPersonalityTimeHud.register();
 
