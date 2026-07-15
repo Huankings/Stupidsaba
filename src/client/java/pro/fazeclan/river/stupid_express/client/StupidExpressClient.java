@@ -12,6 +12,7 @@ import pro.fazeclan.river.stupid_express.client.role.convener.ConvenerMoodHud;
 import pro.fazeclan.river.stupid_express.client.ui.common.PagedPlayerScreenState;
 import pro.fazeclan.river.stupid_express.client.modifier.dual_personality.DualPersonalityClientState;
 import pro.fazeclan.river.stupid_express.client.modifier.dual_personality.DualPersonalityKeybinds;
+import pro.fazeclan.river.stupid_express.client.modifier.dual_personality.DualPersonalityTimeHud;
 import pro.fazeclan.river.stupid_express.constants.SEItems;
 
 public class StupidExpressClient implements ClientModInitializer {
@@ -23,6 +24,7 @@ public class StupidExpressClient implements ClientModInitializer {
     public void onInitializeClient() {
         StupidExpressInstinctHandlers.register();
         ConvenerMoodHud.register();
+        DualPersonalityTimeHud.register();
 
         // 分页缓存只在当前对局内生效。
         // 开局、停局、结算结束时统一清空，避免上一把浏览过的页码残留到下一把。
@@ -33,9 +35,8 @@ public class StupidExpressClient implements ClientModInitializer {
         GameEvents.ON_GAME_STOP.register(gameMode -> {
             PagedPlayerScreenState.reset();
             /*
-             * Wathe 的 TimeRenderer 使用静态滚动数字对象。
-             * 双活 HUD 借用它显示 40 秒倒计时，所以停局时要立刻清掉，
-             * 否则结算画面或下一次普通时间 HUD 会复用旧数字。
+             * 顶部时间 HUD 已经通过 Wathe 的 TimeHudApi 接入。
+             * 这里仍然主动清一次瞬时动画状态，保证停局/结算边界不会复用双活倒计时的旧滚动数字。
              */
             DualPersonalityClientState.resetTransientRenderState();
         });

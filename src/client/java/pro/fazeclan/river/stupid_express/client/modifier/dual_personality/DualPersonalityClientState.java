@@ -124,11 +124,10 @@ public final class DualPersonalityClientState {
 
     public static void resetTransientRenderState() {
         /*
-         * TimeRenderer.view 是 Wathe 的静态缓动对象。
-         * 双活期间我们借它显示双活倒计时，结算/停局时必须重建，
-         * 否则下一次原版时间 HUD 复用它时会从旧双活时间继续显示/滚动。
+         * 双活倒计时现在通过 Wathe 的 TimeHudApi 接管顶部时间。
+         * 停局/结算边界仍需要清理 TimeRenderer 的滚动数字状态，
+         * 但这里不再直接碰 view/offsetDelta，而是调用 Wathe 暴露的重置入口。
          */
-        TimeRenderer.view = new TimeRenderer.TimeNumberRenderer();
-        TimeRenderer.offsetDelta = 0.0F;
+        TimeRenderer.resetTransientState();
     }
 }

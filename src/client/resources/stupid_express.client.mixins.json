@@ -9,7 +9,6 @@
     "modifier.dual_personality.DualPersonalityHudMixin",
     "modifier.dual_personality.DualPersonalityMovementSpeedMixin",
     "modifier.dual_personality.DualPersonalityRoleNameMixin",
-    "modifier.dual_personality.DualPersonalityTimeRendererMixin",
     "modifier.lovers.LoversHudMixin",
     "role.CustomWinnerAnnouncementMixin",
     "role.CustomWinnerTextRendering",
