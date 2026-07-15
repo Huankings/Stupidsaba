@@ -20,7 +20,6 @@
     "role.convener.ConvenerHudMixin",
     "role.convener.ConvenerInventoryMixin",
     "role.convener.ConvenerMovementSpeedMixin",
-    "role.convener.ConvenerMoodMixin",
     "role.convener.ConvenerPlayerRendererMixin$CapeMixin",
     "role.convener.ConvenerPlayerRendererMixin$SkinMixin",
     "role.convener.ConvenerRoleNameMixin",
