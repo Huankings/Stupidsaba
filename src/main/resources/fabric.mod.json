@@ -50,6 +50,7 @@
     "fabricloader": "*",
     "fabric": "*",
     "minecraft": "${minecraft_version}",
+    "wathe": "*",
     "harpymodloader": "*",
     "fzzy_config": "*"
   }

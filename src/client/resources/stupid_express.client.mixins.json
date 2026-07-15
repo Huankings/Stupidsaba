@@ -23,8 +23,6 @@
     "role.convener.ConvenerPlayerRendererMixin$SkinMixin",
     "role.convener.ConvenerRoleNameMixin",
     "role.necromancer.NecromancerHudMixin",
-    "role.necromancer.NecromancerNoShopMixin",
-    "shop.SEShopScreenMixin",
     "role.thief.ThiefCooldownHudMixin",
     "role.thief.ThiefCrosshairRendererMixin",
     "role.thief.ThiefTakeItemMixin"

@@ -3,6 +3,7 @@ package pro.fazeclan.river.stupid_express.constants;
 import dev.doctor4t.wathe.api.Role;
 import dev.doctor4t.wathe.api.WatheRoles;
 import dev.doctor4t.wathe.api.economy.EconomyApi;
+import dev.doctor4t.wathe.api.shop.ShopApi;
 import dev.doctor4t.wathe.api.task.TaskCompletionApi;
 import dev.doctor4t.wathe.cca.GameWorldComponent;
 import dev.doctor4t.wathe.game.GameFunctions;
@@ -33,7 +34,7 @@ import pro.fazeclan.river.stupid_express.role.necromancer.RevivalSelectionHandle
 import pro.fazeclan.river.stupid_express.role.thief.ThiefItemTracker;
 import pro.fazeclan.river.stupid_express.role.thief.packet.ThiefTakeItemC2SPacket;
 import pro.fazeclan.river.stupid_express.record.StupidExpressReplay;
-import pro.fazeclan.river.stupid_express.shop.SEShopRegistry;
+import pro.fazeclan.river.stupid_express.shop.SEShops;
 
 import java.util.HashMap;
 
@@ -114,9 +115,26 @@ public class SERoles {
 
     public static void init() {
 
-        // 在角色初始化阶段顺手注册自定义商店。
-        // 这样后续新增职业商店时，只需要在这里补一行注册即可。
-        SEShopRegistry.registerRoleShop(INITIATE, InitiateShopHandler::getShopEntries);
+        /*
+         * 在角色初始化阶段注册自定义商店。
+         * 商品列表仍由 InitiateShopHandler 按职业分类维护；Wathe ShopApi 负责实际渲染与购买流程。
+         */
+        ShopApi.registerRoleShop(INITIATE, SEShops.provider(InitiateShopHandler::getShopEntries));
+        /*
+         * 死灵法师是否拥有杀手商店由配置控制。
+         * 旧实现用客户端 mixin 取消 LimitedInventoryScreen.init；Wathe 商店流程改为 ShopApi 后，
+         * 继续 mixin 屏幕初始化会因为注入点变化而崩溃。这里改为公共商店修改器：
+         * 客户端渲染和服务端购买都会看到同一份“空商店”，不会出现只隐藏按钮但服务端仍可买的问题。
+         */
+        ShopApi.registerShopModifier(
+                StupidExpress.id("necromancer_no_shop"),
+                ShopApi.DEFAULT_PRIORITY,
+                (context, entries) -> {
+                    if (context.role() == NECROMANCER && !StupidExpress.CONFIG.rolesSection.necromancerSection.necromancerHasShop) {
+                        entries.clear();
+                    }
+                }
+        );
         registerEconomyApi();
 
         /// AMNESIAC

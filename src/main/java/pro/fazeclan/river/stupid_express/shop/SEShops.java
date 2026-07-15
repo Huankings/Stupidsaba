@@ -1,14 +1,13 @@
 package pro.fazeclan.river.stupid_express.shop;
 
+import dev.doctor4t.wathe.api.shop.ShopApi;
+import dev.doctor4t.wathe.api.shop.ShopPurchaseContext;
+import dev.doctor4t.wathe.api.shop.ShopPurchaseResult;
 import dev.doctor4t.wathe.cca.PlayerShopComponent;
 import dev.doctor4t.wathe.game.GameConstants;
 import dev.doctor4t.wathe.index.WatheItems;
-import dev.doctor4t.wathe.index.WatheSounds;
 import dev.doctor4t.wathe.record.ShopPurchaseTracker;
 import dev.doctor4t.wathe.util.ShopEntry;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +44,46 @@ public final class SEShops {
      * 就不用把价格写死两份，Wathe 改价后这里也会自动跟着变。</p>
      */
     public static int getBaseItemPrice(@NotNull Item item, int defaultValue) {
-        return ITEM_PRICES.getOrDefault(item, defaultValue);
+        return ShopApi.getDefaultPrice(item, ITEM_PRICES.getOrDefault(item, defaultValue));
+    }
+
+    /**
+     * 把 StupidExpress 原有的职业商品列表适配成 Wathe ShopApi provider。
+     *
+     * <p>entriesProvider 仍然只负责“这个职业卖什么”；购买时会回到 {@link #purchase(ShopPurchaseContext)}，
+     * 由 Wathe 统一扣钱、同步、播放音效和记录回放。</p>
+     */
+    public static dev.doctor4t.wathe.api.shop.RoleShopProvider provider(@NotNull RoleShopProvider entriesProvider) {
+        return new dev.doctor4t.wathe.api.shop.RoleShopProvider() {
+            @Override
+            public @NotNull java.util.List<ShopEntry> getShopEntries(@NotNull Player player) {
+                return entriesProvider.getShopEntries(player);
+            }
+
+            @Override
+            public @NotNull ShopPurchaseResult purchase(@NotNull ShopPurchaseContext context) {
+                return SEShops.purchase(context);
+            }
+        };
+    }
+
+    /**
+     * 提供给 Wathe ShopApi 的购买交付逻辑。
+     *
+     * <p>这里不再扣钱、不再播放音效、不再写回放记录；这些公共动作已经集中到 Wathe。
+     * 本方法只回答一个问题：当前商品有没有真的交付成功。</p>
+     */
+    public static @NotNull ShopPurchaseResult purchase(@NotNull ShopPurchaseContext context) {
+        Player player = context.player();
+        ShopEntry entry = context.entry();
+        Item item = entry.stack().getItem();
+        if (context.balance() < entry.price() || player.getCooldowns().isOnCooldown(item)) {
+            return ShopPurchaseResult.FAIL_SHOW_MESSAGE;
+        }
+
+        return tryDeliverPurchasedEntry(player, entry)
+                ? ShopPurchaseResult.SUCCESS
+                : ShopPurchaseResult.FAIL_SHOW_MESSAGE;
     }
 
     /**
@@ -73,9 +111,9 @@ public final class SEShops {
          * 自定义商店里同一个格子可能已经被换成了完全不同的道具，
          * 因此购买成功后要主动把真实的 ShopEntry 回填给 Wathe 回放系统，
          * 避免回放继续按原版固定商店索引去误报商品。
-         */
+            */
         ShopPurchaseTracker.captureSuccessfulPurchase(player, entry, -1, entry.price());
-        playBuySound(player);
+        ShopApi.playBuySound(player);
         return true;
     }
 
@@ -105,32 +143,7 @@ public final class SEShops {
     }
 
     public static void notifyPurchaseFailed(@NotNull Player player) {
-        player.displayClientMessage(
-                Component.translatable("shop.purchase_failed").withColor(0xAA0000),
-                true
-        );
-        playFailSound(player);
-    }
-
-    private static void playBuySound(@NotNull Player player) {
-        if (player instanceof ServerPlayer serverPlayer) {
-            serverPlayer.playNotifySound(
-                    WatheSounds.UI_SHOP_BUY,
-                    SoundSource.PLAYERS,
-                    1.0F,
-                    0.9F + player.getRandom().nextFloat() * 0.2F
-            );
-        }
-    }
-
-    private static void playFailSound(@NotNull Player player) {
-        if (player instanceof ServerPlayer serverPlayer) {
-            serverPlayer.playNotifySound(
-                    WatheSounds.UI_SHOP_BUY_FAIL,
-                    SoundSource.PLAYERS,
-                    1.0F,
-                    0.9F + player.getRandom().nextFloat() * 0.2F
-            );
-        }
+        ShopApi.sendPurchaseFailedMessage(player);
+        ShopApi.playFailSound(player);
     }
 }
