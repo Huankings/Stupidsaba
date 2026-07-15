@@ -22,7 +22,6 @@
     "role.convener.ConvenerPlayerRendererMixin$CapeMixin",
     "role.convener.ConvenerPlayerRendererMixin$SkinMixin",
     "role.convener.ConvenerRoleNameMixin",
-    "role.initiate.InitiateCoinMixin",
     "role.necromancer.NecromancerHudMixin",
     "role.necromancer.NecromancerNoShopMixin",
     "shop.SEShopScreenMixin",
