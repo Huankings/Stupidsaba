@@ -35,7 +35,7 @@
   "announcement.role.stupid_express.thief": "小偷",
   "announcement.goals.stupid_express.thief": "窃取武器，成为最后的幸存者",
   "announcement.win.stupid_express.thief": "小偷胜利",
-  "game.win.stupid_express.thief": "即使你知道我是谁，但面对已经属于我的武器，你也无能为力",
+  "game.win.stupid_express.thief": "用你们的武器来取得我的胜利",
   "hud.stupid_express.thief.ready": "§a✔ 就绪 §7(%s§7)",
   "hud.stupid_express.thief.cooldown": "§c⏱ %s秒 §7(%s§7)",
   "guidebook.role.stupid_express:thief": "小偷",
