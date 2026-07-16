@@ -12,6 +12,7 @@ import pro.fazeclan.river.stupid_express.constants.SEItems;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
 import pro.fazeclan.river.stupid_express.record.StupidExpressReplay;
+import pro.fazeclan.river.stupid_express.victory.StupidExpressVictoryRules;
 
 public class StupidExpress implements ModInitializer {
 
@@ -26,6 +27,7 @@ public class StupidExpress implements ModInitializer {
 
         SERoles.init();
         SEModifiers.init();
+        StupidExpressVictoryRules.init();
         StupidExpressBodyAppearanceHandlers.register();
         StupidExpressCommunicationManager.init();
         StupidExpressCommand.init();

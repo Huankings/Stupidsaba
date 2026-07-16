@@ -1,7 +1,8 @@
 package pro.fazeclan.river.stupid_express.role.arsonist.item;
 
-import dev.doctor4t.wathe.cca.GameRoundEndComponent;
 import dev.doctor4t.wathe.cca.GameWorldComponent;
+import dev.doctor4t.wathe.api.win.CustomVictory;
+import dev.doctor4t.wathe.api.win.VictoryApi;
 import dev.doctor4t.wathe.game.GameFunctions;
 import dev.doctor4t.wathe.record.GameRecordManager;
 import net.minecraft.server.level.ServerLevel;
@@ -15,7 +16,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import pro.fazeclan.river.stupid_express.StupidExpress;
-import pro.fazeclan.river.stupid_express.cca.CustomWinnerComponent;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
 import pro.fazeclan.river.stupid_express.role.arsonist.cca.DousedPlayerComponent;
 
@@ -53,14 +53,14 @@ public class LighterItem extends Item {
 
             var playersLeft = players.stream().filter(GameFunctions::isPlayerAliveAndSurvival).count();
             if (playersLeft == 1) {
-                var nrwc = CustomWinnerComponent.KEY.get(serverLevel);
-                nrwc.setWinningTextId(SERoles.ARSONIST.identifier().getPath());
-                nrwc.setWinners(List.of(player));
-                nrwc.setColor(SERoles.ARSONIST.color());
-                nrwc.sync();
-                GameRoundEndComponent.KEY.get(serverLevel).setRoundEndData(serverLevel.players(), GameFunctions.WinStatus.KILLERS);
-
-                GameFunctions.stopGame(serverLevel);
+                /*
+                 * 点火后只剩纵火犯时，直接把胜利交给 Wathe 的公开接口。
+                 * 这样服务端胜负、客户端顶部公告、右侧独立胜利阵营和 didWin 音效都由本体统一处理。
+                 */
+                VictoryApi.endGameWithCustomVictory(
+                        serverLevel,
+                        CustomVictory.of(SERoles.ARSONIST.identifier(), SERoles.ARSONIST.color(), List.of(player))
+                );
             }
         } else {
             player.playNotifySound(SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 1.0f, 1.0f);

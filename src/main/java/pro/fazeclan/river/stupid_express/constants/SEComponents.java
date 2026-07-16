@@ -7,7 +7,6 @@ import org.ladysnake.cca.api.v3.entity.RespawnCopyStrategy;
 import org.ladysnake.cca.api.v3.world.WorldComponentFactoryRegistry;
 import org.ladysnake.cca.api.v3.world.WorldComponentInitializer;
 import pro.fazeclan.river.stupid_express.cca.AbilityCooldownComponent;
-import pro.fazeclan.river.stupid_express.cca.CustomWinnerComponent;
 import pro.fazeclan.river.stupid_express.modifier.dual_personality.DualPersonalityComponent;
 import pro.fazeclan.river.stupid_express.modifier.lovers.LoversPairComponent;
 import pro.fazeclan.river.stupid_express.role.arsonist.cca.DousedPlayerComponent;
@@ -42,7 +41,6 @@ public class SEComponents implements EntityComponentInitializer, WorldComponentI
 
     @Override
     public void registerWorldComponentFactories(WorldComponentFactoryRegistry registry) {
-        registry.register(CustomWinnerComponent.KEY, CustomWinnerComponent::new);
         registry.register(AvariciousPayoutComponent.KEY, AvariciousPayoutComponent::new);
         registry.register(NecromancerComponent.KEY, NecromancerComponent::new);
         registry.register(LoversPairComponent.KEY, LoversPairComponent::new);

@@ -1,12 +1,12 @@
 package pro.fazeclan.river.stupid_express.role.convener;
 
-import dev.doctor4t.wathe.cca.GameRoundEndComponent;
 import dev.doctor4t.wathe.cca.GameWorldComponent;
+import dev.doctor4t.wathe.api.win.CustomVictory;
+import dev.doctor4t.wathe.api.win.VictoryApi;
 import dev.doctor4t.wathe.game.GameFunctions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import pro.fazeclan.river.stupid_express.cca.CustomWinnerComponent;
 import pro.fazeclan.river.stupid_express.constants.SERoles;
 import pro.fazeclan.river.stupid_express.role.convener.cca.ConvenerPlayerComponent;
 
@@ -102,13 +102,13 @@ public final class ConvenerWinHelper {
      * 将结算面板、胜负文本和胜者列表全部切到召集者自己的单独阵营胜利文案。
      */
     public static void declareConvenerWin(ServerLevel serverLevel, ServerPlayer winner) {
-        CustomWinnerComponent customWinnerComponent = CustomWinnerComponent.KEY.get(serverLevel);
-        customWinnerComponent.setWinningTextId(SERoles.CONVENER.identifier().getPath());
-        customWinnerComponent.setWinners(List.of((Player) winner));
-        customWinnerComponent.setColor(SERoles.CONVENER.color());
-        customWinnerComponent.sync();
-
-        GameRoundEndComponent.KEY.get(serverLevel).setRoundEndData(serverLevel.players(), GameFunctions.WinStatus.KILLERS);
-        GameFunctions.stopGame(serverLevel);
+        /*
+         * 召集者可能从交互逻辑中立即达成胜利，也可能由 VictoryApi 的每 tick 规则判定胜利。
+         * 两条路径都走同一个 Wathe 公开出口，避免再次出现服务端赢家、客户端公告和结算分组不同步。
+         */
+        VictoryApi.endGameWithCustomVictory(
+                serverLevel,
+                CustomVictory.of(SERoles.CONVENER.identifier(), SERoles.CONVENER.color(), List.of((Player) winner))
+        );
     }
 }

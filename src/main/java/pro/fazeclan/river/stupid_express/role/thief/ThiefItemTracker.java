@@ -14,16 +14,16 @@ import java.util.List;
 import java.util.UUID;
 
 public class ThiefItemTracker {
-    // Keep track of dropped items
+    // 记录掉落的物品
     private static final List<UUID> ACTIVE_ENTITY_ITEMS = new ArrayList<>();
-    // Keep track of items in player inventories
+    // 跟踪玩家物品栏中的物品
     private static final List<ItemStack> ACTIVE_INVENTORY_ITEMS = new ArrayList<>();
 
     @Getter
     private static boolean weaponAvailable;
     
     public static void init() {
-        // Watch for items spawning in the world
+        // 注意世界中出现的物品
         ServerEntityEvents.ENTITY_LOAD.register((entity, serverLevel) -> {
             if (entity instanceof ItemEntity item && shouldTrack(item)) {
                 trackEntityItem(item);
@@ -32,7 +32,7 @@ public class ThiefItemTracker {
             }
         });
 
-        // Watch for items despawning in the world
+        // 注意世界中消失的物品
         ServerEntityEvents.ENTITY_UNLOAD.register((entity, serverLevel) -> {
             if (entity instanceof ItemEntity item) {
                 untrackEntityItem(item);
@@ -41,13 +41,13 @@ public class ThiefItemTracker {
             }
         });
 
-        // Check inventories when the gamemode starts initializing
+        // 当游戏模式开始初始化时检查库存
         GameEvents.ON_FINISH_INITIALIZE.register((world, gameWorldComponent) -> {
 			updateTrackedInventoryItems((ServerLevel)world);
             updateWeaponAvailable();
 		});
 
-        // Reset when game starts/ends
+        // 在游戏开始/结束时重置
         GameEvents.ON_GAME_START.register((gameMode) -> {
 			ThiefItemTracker.reset();
 		});
@@ -57,13 +57,13 @@ public class ThiefItemTracker {
 		});
     }
 
-    // Check inventories when a player dies
+    // 玩家死亡时检查物品栏
     public static void onKillPlayer(ServerPlayer victim) {
         updateTrackedInventoryItems((ServerLevel)victim.level());
         updateWeaponAvailable();
     }
 
-    // Check Inventories when a player buys a item
+    // 当玩家购买物品时检查库存
     public static void onBuyItem(ServerPlayer player) {
         updateTrackedInventoryItems((ServerLevel)player.level());
         updateWeaponAvailable();
@@ -91,7 +91,7 @@ public class ThiefItemTracker {
         ACTIVE_ENTITY_ITEMS.remove(uuid);
     }
 
-    // Scan all alive players items in their inventory
+    // 扫描所有活着玩家的背包物品
     private static void updateTrackedInventoryItems(ServerLevel serverLevel) {
         List<ServerPlayer> alivePlayers = serverLevel.getPlayers(p -> GameFunctions.isPlayerAliveAndSurvival(p));
         

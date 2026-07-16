@@ -10,22 +10,22 @@ import java.util.List;
 
 public class ThiefItemRules {
 
-    // Gets the ResourceLocation for an item
+    // 获取物品的资源位置
     public static ResourceLocation getId(Item item) {
         return BuiltInRegistries.ITEM.getKey(item);
     }
 
-    // Builds an ResourceLocation from mod + name
+    // 从mod + 名称构建一个资源位置
     public static ResourceLocation getId(String modId, String itemName) {
         return ResourceLocation.fromNamespaceAndPath(modId, itemName);
     }
 
-    // Checks if thief is allowed to take the item
+    // 检查小偷是否被允许拿这个物品
     public static boolean canTake(Item item) {
         return CAN_TAKE.contains(getId(item));
     }
 
-    // If true, game doesn't end when item is available in the game and the thief is alive
+    // 如果为是，当游戏中物品可用且小偷还活着时，游戏不会结束
     public static boolean isKeepGameGoing(Item item) {
         return KEEP_GAME_GOING.contains(getId(item));
     }
