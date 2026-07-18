@@ -1,6 +1,8 @@
 package pro.fazeclan.river.stupid_express.shop;
 
+import dev.doctor4t.wathe.api.economy.EconomyApi;
 import dev.doctor4t.wathe.api.shop.ShopApi;
+import dev.doctor4t.wathe.api.shop.ShopPrice;
 import dev.doctor4t.wathe.api.shop.ShopPurchaseContext;
 import dev.doctor4t.wathe.api.shop.ShopPurchaseResult;
 import dev.doctor4t.wathe.cca.PlayerShopComponent;
@@ -10,6 +12,7 @@ import dev.doctor4t.wathe.record.ShopPurchaseTracker;
 import dev.doctor4t.wathe.util.ShopEntry;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -27,9 +30,16 @@ import java.util.Map;
 public final class SEShops {
 
     private static final Map<Item, Integer> ITEM_PRICES = new HashMap<>();
+    private static final Map<Item, ShopPrice> ITEM_SHOP_PRICES = new HashMap<>();
 
     static {
         for (ShopEntry entry : GameConstants.SHOP_ENTRIES) {
+            /*
+             * 同时保存旧版金币价格和新版完整 ShopPrice。
+             * 旧版 int 价格给“默认金币价 + 偏移量”的历史逻辑继续使用；
+             * 完整 ShopPrice 则用于直接继承 Wathe 默认商品价格，避免任务币条件被截断。
+             */
+            ITEM_SHOP_PRICES.put(entry.stack().getItem(), entry.shopPrice());
             ITEM_PRICES.put(entry.stack().getItem(), entry.price());
         }
     }
@@ -42,9 +52,39 @@ public final class SEShops {
      *
      * <p>这样后续别的职业要“沿用原价”“在原价基础上加减”时，
      * 就不用把价格写死两份，Wathe 改价后这里也会自动跟着变。</p>
+     *
+     * <p>这里固定读取默认商店第 0 组支付方案里的金币价格。
+     * 中立/平民职业商店一般应该用这个方法，避免把杀手专属任务币价格也带进来。</p>
      */
     public static int getBaseItemPrice(@NotNull Item item, int defaultValue) {
-        return ShopApi.getDefaultPrice(item, ITEM_PRICES.getOrDefault(item, defaultValue));
+        return getBaseCurrencyPrice(item, 0, EconomyApi.MONEY, ITEM_PRICES.getOrDefault(item, defaultValue));
+    }
+
+    /**
+     * 按“支付方案索引 + 货币 id”读取 Wathe 默认价格。
+     *
+     * <p>疯魔模式这种多方案价格可以被拆开读取：例如 option 0 的金币、option 0 的任务币、
+     * option 1 的金币、option 1 的任务币。调用方需要哪一个就取哪一个。</p>
+     */
+    public static int getBaseCurrencyPrice(
+            @NotNull Item item,
+            int optionIndex,
+            @NotNull ResourceLocation currency,
+            int defaultValue
+    ) {
+        return ShopApi.getDefaultCurrencyPrice(item, optionIndex, currency, defaultValue);
+    }
+
+    /**
+     * 读取 Wathe 默认商店中某个物品的完整多货币价格。
+     *
+     * <p>返回值保留 {@code ShopPrice} 里的全部支付方案：例如“金币 + 任务币”
+     * 或“金币 / 任务币二选一”。这个方法只适合明确要完整继承默认杀手商品价格的职业；
+     * 普通扩展商店需要单独取金币或任务币时，应使用 {@link #getBaseCurrencyPrice(Item, int, ResourceLocation, int)}。</p>
+     */
+    public static @NotNull ShopPrice getBaseItemShopPrice(@NotNull Item item, int defaultValue) {
+        ShopPrice price = ITEM_SHOP_PRICES.get(item);
+        return price == null ? ShopPrice.money(getBaseItemPrice(item, defaultValue)) : price;
     }
 
     /**
@@ -77,7 +117,12 @@ public final class SEShops {
         Player player = context.player();
         ShopEntry entry = context.entry();
         Item item = entry.stack().getItem();
-        if (context.balance() < entry.price() || player.getCooldowns().isOnCooldown(item)) {
+        /*
+         * 这里必须让 Wathe 的 ShopPrice 负责余额判定。
+         * StupidExpress 职业商店以后如果直接复用默认匕首/开锁器，
+         * 就能正确支持任务币和多方案价格，而不是只看金币余额。
+         */
+        if (!context.canAffordEntry() || player.getCooldowns().isOnCooldown(item)) {
             return ShopPurchaseResult.FAIL_SHOW_MESSAGE;
         }
 
