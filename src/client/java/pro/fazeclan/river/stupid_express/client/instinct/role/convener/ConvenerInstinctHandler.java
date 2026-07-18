@@ -25,6 +25,8 @@ public final class ConvenerInstinctHandler {
                     && !gameWorld.isRole(viewer, SERoles.CONVENER)) {
                 /*
                  * 召集后的强制变形只压制“依赖本能开启”的透视。
+                 * 压制本身也必须要求 viewer 存活；如果玩家在变形压制时间内死亡，
+                 * 他应立刻进入观察者透视，而不是继续被自己的死亡前压制状态锁住本能。
                  * 这里通过 availability 返回 DISABLE，所有调用 WatheClient.isInstinctEnabled() 的本能链路都会被关掉；
                  * 但 Cook/Angel/Executioner 这类不依赖本能键的独立职业标记不会被误伤。
                  */
@@ -34,10 +36,12 @@ public final class ConvenerInstinctHandler {
         });
 
         InstinctApi.registerAvailability(StupidExpress.id("instinct/convener_availability"), InstinctApi.DEFAULT_PRIORITY, viewer -> {
-            if (GameWorldComponent.KEY.get(viewer.level()).isRole(viewer, SERoles.CONVENER)
+            if (GameFunctions.isPlayerAliveAndSurvival(viewer)
+                    && GameWorldComponent.KEY.get(viewer.level()).isRole(viewer, SERoles.CONVENER)
                     && WatheClient.isInstinctInputActive()) {
                 /*
                  * 召集者自己的透视仍然是“按本能键才开启”的能力。
+                 * 死亡后不再开启召集者本能，统一交给观察者职业色逻辑处理。
                  * 资格放在 0 优先级，和 Wathe 默认杀手本能平级，不额外压过其它职业规则。
                  */
                 return InstinctApi.AvailabilityResult.ENABLE;

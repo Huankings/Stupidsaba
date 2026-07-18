@@ -18,8 +18,13 @@ public final class ThiefInstinctHandler {
 
     public static void register() {
         InstinctApi.registerAvailability(StupidExpress.id("instinct/thief_availability"), InstinctApi.DEFAULT_PRIORITY, viewer -> {
-            if (GameWorldComponent.KEY.get(viewer.level()).isRole(viewer, SERoles.THIEF)
+            if (GameFunctions.isPlayerAliveAndSurvival(viewer)
+                    && GameWorldComponent.KEY.get(viewer.level()).isRole(viewer, SERoles.THIEF)
                     && WatheClient.isInstinctInputActive()) {
+                /*
+                 * 小偷本能只在存活时开启。
+                 * 非存活玩家的物品/玩家描边要走观察者规则，避免被小偷灰色逻辑覆盖。
+                 */
                 return InstinctApi.AvailabilityResult.ENABLE;
             }
             return InstinctApi.AvailabilityResult.PASS;

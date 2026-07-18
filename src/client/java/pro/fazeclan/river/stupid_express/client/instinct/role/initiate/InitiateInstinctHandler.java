@@ -15,7 +15,9 @@ public final class InitiateInstinctHandler {
 
     public static void register() {
         InstinctApi.registerHighlight(StupidExpress.id("instinct/initiate_targets"), StupidExpressInstinctHandlers.PRIORITY_MARK_COLOR, (viewer, target) -> {
-            if (!(target instanceof Player targetPlayer)) {
+            if (!(target instanceof Player targetPlayer)
+                    || !GameFunctions.isPlayerAliveAndSurvival(viewer)
+                    || !GameFunctions.isPlayerAliveAndSurvival(targetPlayer)) {
                 return InstinctApi.HighlightResult.pass();
             }
 
@@ -24,11 +26,11 @@ public final class InitiateInstinctHandler {
                     && gameWorld.isRole(viewer, SERoles.INITIATE)) {
                 /*
                  * 入会者互相识别不依赖本能键，是词条/职业关系提示。
+                 * 但仍然只对存活入会者开放；死亡后不能用这条高优先级标记覆盖观察者职业色。
                  */
                 return InstinctApi.HighlightResult.color(SERoles.INITIATE.color());
             }
             if (gameWorld.isRole(targetPlayer, SERoles.INITIATE)
-                    && !GameFunctions.isPlayerSpectatingOrCreative(viewer)
                     && WatheClient.isInstinctEnabled()
                     && gameWorld.canUseKillerFeatures(viewer)) {
                 /*

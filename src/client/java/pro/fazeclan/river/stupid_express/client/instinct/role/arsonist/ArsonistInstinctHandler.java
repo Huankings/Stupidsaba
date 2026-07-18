@@ -18,8 +18,13 @@ public final class ArsonistInstinctHandler {
 
     public static void register() {
         InstinctApi.registerAvailability(StupidExpress.id("instinct/arsonist_availability"), InstinctApi.DEFAULT_PRIORITY, viewer -> {
-            if (GameWorldComponent.KEY.get(viewer.level()).isRole(viewer, SERoles.ARSONIST)
+            if (GameFunctions.isPlayerAliveAndSurvival(viewer)
+                    && GameWorldComponent.KEY.get(viewer.level()).isRole(viewer, SERoles.ARSONIST)
                     && WatheClient.isInstinctInputActive()) {
+                /*
+                 * 纵火犯本能只属于仍在局内行动的玩家。
+                 * 死亡后即使角色表里还保留纵火犯身份，也不能继续开启自己的本能资格。
+                 */
                 return InstinctApi.AvailabilityResult.ENABLE;
             }
             return InstinctApi.AvailabilityResult.PASS;
