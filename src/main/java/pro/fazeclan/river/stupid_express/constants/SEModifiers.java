@@ -15,6 +15,7 @@ import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.modifier.dual_personality.DualPersonalityComponent;
 import pro.fazeclan.river.stupid_express.modifier.dual_personality.DualPersonalityManager;
 import pro.fazeclan.river.stupid_express.modifier.dual_personality.packet.DualPersonalitySwitchC2SPacket;
+import pro.fazeclan.river.stupid_express.modifier.dual_personality.packet.DualPersonalitySwitchKeyLabelC2SPacket;
 import pro.fazeclan.river.stupid_express.modifier.lovers.LoversPairComponent;
 
 import java.util.List;
@@ -49,6 +50,8 @@ public class SEModifiers {
         DualPersonalityManager.init();
         // 客户端 Y 键请求使用的 C2S 包也在这里注册服务端接收器。
         DualPersonalitySwitchC2SPacket.register();
+        // 同步客户端当前按键显示文本，方便服务端 actionbar 直接显示“按下 U 键”之类的内容。
+        DualPersonalitySwitchKeyLabelC2SPacket.register();
 
         /// LOVERS
         Harpymodloader.MODIFIER_MAX.put(StupidExpress.id("lovers"), 1);

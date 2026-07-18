@@ -33,6 +33,7 @@ public class StupidExpressClient implements ClientModInitializer {
         GameEvents.ON_GAME_START.register(gameMode -> {
             PagedPlayerScreenState.reset();
             DualPersonalityClientState.resetTransientRenderState();
+            DualPersonalityKeybinds.resetSyncedState();
         });
         GameEvents.ON_GAME_STOP.register(gameMode -> {
             PagedPlayerScreenState.reset();
@@ -41,10 +42,12 @@ public class StupidExpressClient implements ClientModInitializer {
              * 这里仍然主动清一次瞬时动画状态，保证停局/结算边界不会复用双活倒计时的旧滚动数字。
              */
             DualPersonalityClientState.resetTransientRenderState();
+            DualPersonalityKeybinds.resetSyncedState();
         });
         GameEvents.ON_FINISH_FINALIZE.register((world, gameComponent) -> {
             PagedPlayerScreenState.reset();
             DualPersonalityClientState.resetTransientRenderState();
+            DualPersonalityKeybinds.resetSyncedState();
         });
 
         DualPersonalityKeybinds.init();

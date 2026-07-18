@@ -5,7 +5,9 @@ import dev.doctor4t.wathe.api.win.VictoryApi;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * StupidExpress 胜利规则的公共小工具。
@@ -30,6 +32,27 @@ public final class StupidExpressVictoryUtil {
         return VictoryApi.VictoryResult.customWin(
                 CustomVictory.builder(id, color)
                         .winnersFromPlayers(winners)
+                        .build()
+        );
+    }
+
+    public static VictoryApi.VictoryResult customWinUuids(
+            ResourceLocation id,
+            int color,
+            Collection<UUID> winnerUuids
+    ) {
+        /*
+         * 词条独立胜利和普通职业独立胜利有一个重要差别：
+         * 普通职业通常只需要把“当前还活着并触发胜利的玩家”写进 winners；
+         * 但恋人 / 双重人格是一组词条阵营，另一半即使已经死亡，也应该跟随同组玩家一起算进胜利阵营。
+         *
+         * 因此这里额外提供 UUID 入口，允许规则类直接把“本局属于这个词条阵营的玩家 UUID”
+         * 写入 Wathe 的 CustomVictory。Wathe 结算快照本来就保存了死亡玩家的 UUID 和职业显示信息，
+         * 客户端拿到这些 UUID 后，会把死亡者带红叉画在右侧“独立胜利阵营”，而不是误分到左侧“其他”。
+         */
+        return VictoryApi.VictoryResult.customWin(
+                CustomVictory.builder(id, color)
+                        .winners(winnerUuids)
                         .build()
         );
     }

@@ -9,6 +9,7 @@ import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.victory.StupidExpressVictoryUtil;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -53,6 +54,7 @@ public final class LoversVictoryRule {
              * 先做成列表可以避免每次循环都重新 stream，同时也能传给 LoversPairComponent 的 fallback 逻辑。
              */
             List<UUID> remainingLoverUuids = remainingLovers.stream().map(ServerPlayer::getUUID).toList();
+            List<UUID> allLoverUuids = modifierComponent.getAllWithModifier(SEModifiers.LOVERS);
 
             VictoryApi.VictoryResult heartbreakResult = handleHeartbreakDeaths(remainingLovers, remainingLoverUuids, pairComponent);
             if (heartbreakResult.action() != VictoryApi.VictoryAction.PASS) {
@@ -64,10 +66,10 @@ public final class LoversVictoryRule {
              * 而是作为自己的独立胜利阵营写入 Wathe 自定义结算。
              */
             if (remainingPlayers.size() == remainingLovers.size()) {
-                return StupidExpressVictoryUtil.customWin(
+                return StupidExpressVictoryUtil.customWinUuids(
                         SEModifiers.LOVERS.identifier(),
                         SEModifiers.LOVERS.color(),
-                        remainingLovers
+                        collectIndependentWinnerUuids(remainingLovers, pairComponent, allLoverUuids)
                 );
             }
 
@@ -208,5 +210,34 @@ public final class LoversVictoryRule {
             }
         }
         return null;
+    }
+
+    private static List<UUID> collectIndependentWinnerUuids(
+            List<ServerPlayer> remainingLovers,
+            LoversPairComponent pairComponent,
+            List<UUID> allLoverUuids
+    ) {
+        /*
+         * 这里修复“死亡的同词条伴侣被画到左侧其他阵营”的问题。
+         *
+         * 独立胜利条件仍然只看 remainingLovers：因为只有当前存活者才能真正把游戏带到结算。
+         * 但 Wathe 的 CustomVictory.winnerUuids 不只是“触发结算的人”，而是“结算页右侧胜利阵营的人”。
+         * 恋人是成对词条阵营，所以一名恋人活到最后时，他/她的伴侣即使已经死亡，也应该和他/她一起
+         * 被写进 winnerUuids；Wathe 客户端随后会根据 RoundEndData.wasDead 画红叉，而不会把死亡伴侣归到“其他”。
+         *
+         * 配对组件有显式 pair 时优先使用显式 pair；如果旧存档或调试状态没有 pair，
+         * LoversPairComponent#getPartnerOrFallback 会在“本局刚好只有两个 LOVERS UUID”时做旧版兜底。
+         */
+        LinkedHashSet<UUID> winnerUuids = new LinkedHashSet<>();
+        for (ServerPlayer lover : remainingLovers) {
+            UUID loverUuid = lover.getUUID();
+            winnerUuids.add(loverUuid);
+
+            UUID partnerUuid = pairComponent.getPartnerOrFallback(loverUuid, allLoverUuids);
+            if (partnerUuid != null) {
+                winnerUuids.add(partnerUuid);
+            }
+        }
+        return List.copyOf(winnerUuids);
     }
 }

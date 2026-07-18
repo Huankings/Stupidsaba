@@ -8,6 +8,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
 import pro.fazeclan.river.stupid_express.modifier.dual_personality.packet.DualPersonalitySwitchC2SPacket;
+import pro.fazeclan.river.stupid_express.modifier.dual_personality.packet.DualPersonalitySwitchKeyLabelC2SPacket;
 
 /**
  * 双重人格客户端按键注册。
@@ -19,6 +20,7 @@ import pro.fazeclan.river.stupid_express.modifier.dual_personality.packet.DualPe
 public final class DualPersonalityKeybinds {
 
     public static KeyMapping switchKey;
+    private static String lastSyncedSwitchKeyLabel = "";
 
     private DualPersonalityKeybinds() {
     }
@@ -33,6 +35,8 @@ public final class DualPersonalityKeybinds {
         ));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            syncSwitchKeyLabel(client);
+
             if (DualPersonalityClientState.isDormant(Minecraft.getInstance().player)) {
                 /*
                  * 如果玩家在切入休眠人格前已经按住 Shift 或数字键，
@@ -49,5 +53,28 @@ public final class DualPersonalityKeybinds {
                 }
             }
         });
+    }
+
+    public static void resetSyncedState() {
+        lastSyncedSwitchKeyLabel = "";
+    }
+
+    private static void syncSwitchKeyLabel(Minecraft client) {
+        if (client == null || client.getConnection() == null || switchKey == null) {
+            return;
+        }
+
+        /*
+         * KeyMapping#getTranslatedKeyMessage() 返回的是客户端当前绑定的实际按键显示，
+         * 例如 U、1、鼠标 4 等，而不是“这个功能叫什么”。
+         * 这里把它同步到服务端，服务端再用在 actionbar 里，就不会出现“按下双重人格切换键键”这种重复文案。
+         */
+        String currentLabel = switchKey.getTranslatedKeyMessage().getString();
+        if (currentLabel.equals(lastSyncedSwitchKeyLabel)) {
+            return;
+        }
+
+        lastSyncedSwitchKeyLabel = currentLabel;
+        ClientPlayNetworking.send(new DualPersonalitySwitchKeyLabelC2SPacket(currentLabel));
     }
 }

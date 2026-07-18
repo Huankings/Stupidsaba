@@ -43,6 +43,7 @@ public class DualPersonalityComponent implements AutoSyncedComponent {
     private static final String PAUSED_KEY = "paused";
     private static final String PAUSE_REASON_KEY = "pause_reason";
     private static final String INITIAL_MESSAGE_SENT_KEY = "initial_message_sent";
+    private static final String INITIAL_MESSAGE_DELAY_TICKS_KEY = "initial_message_delay_ticks";
 
     private final Level level;
 
@@ -199,6 +200,9 @@ public class DualPersonalityComponent implements AutoSyncedComponent {
             state.paused = pairTag.getBoolean(PAUSED_KEY);
             state.pauseReason = PauseReason.fromSerialized(pairTag.getString(PAUSE_REASON_KEY));
             state.initialMessageSent = pairTag.getBoolean(INITIAL_MESSAGE_SENT_KEY);
+            if (pairTag.contains(INITIAL_MESSAGE_DELAY_TICKS_KEY)) {
+                state.initialMessageDelayTicks = pairTag.getInt(INITIAL_MESSAGE_DELAY_TICKS_KEY);
+            }
             this.pairs.add(state);
         }
     }
@@ -220,6 +224,7 @@ public class DualPersonalityComponent implements AutoSyncedComponent {
             pairTag.putBoolean(PAUSED_KEY, pair.paused);
             pairTag.putString(PAUSE_REASON_KEY, pair.pauseReason.serialized);
             pairTag.putBoolean(INITIAL_MESSAGE_SENT_KEY, pair.initialMessageSent);
+            pairTag.putInt(INITIAL_MESSAGE_DELAY_TICKS_KEY, pair.initialMessageDelayTicks);
             pairList.add(pairTag);
         }
         tag.put(PAIRS_KEY, pairList);
@@ -254,6 +259,8 @@ public class DualPersonalityComponent implements AutoSyncedComponent {
         public PauseReason pauseReason = PauseReason.NONE;
         // 开局身份提示只发送一次，避免每 tick 都刷 actionbar。
         public boolean initialMessageSent;
+        // 开局身份提示延后发送的剩余 tick，避免和词条/阵营开局 actionbar 挤在同一瞬间。
+        public int initialMessageDelayTicks = DualPersonalityManager.INITIAL_ROLE_MESSAGE_DELAY_TICKS;
 
         public PairState(UUID main, UUID sub, boolean forced) {
             this.main = main;

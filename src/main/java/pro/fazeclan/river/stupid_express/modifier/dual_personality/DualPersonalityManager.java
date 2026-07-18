@@ -29,8 +29,10 @@ import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.record.StupidExpressReplay;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -55,6 +57,8 @@ public final class DualPersonalityManager {
     public static final int DOUBLE_ACTIVE_SPEED_PERCENT = 50;
     // 双重人格统一使用的显示颜色：词条、HUD、actionbar、胜利文本都复用它。
     public static final int COLOR = 0x7633db;
+    // 开局身份提示延后 2 秒发送，避免和开局发词条公告的 actionbar 挤在一起。
+    public static final int INITIAL_ROLE_MESSAGE_DELAY_TICKS = 2 * 20;
 
     // 双活倒计时归零时使用的自定义死亡原因，用于 replay 和死亡提示格式化。
     public static final ResourceLocation DOUBLE_ACTIVE_TIMEOUT_DEATH_REASON =
@@ -67,6 +71,13 @@ public final class DualPersonalityManager {
      * 防止超时死亡再次被拦截成新的双活，形成死循环。
      */
     private static final Set<UUID> FORCE_TIMEOUT_DEATHS = new HashSet<>();
+    /**
+     * 客户端同步上来的“人格切换键显示文本”。
+     *
+     * <p>这个字符串是按玩家客户端当前绑定实际同步过来的，不再是语言文件里的“功能名称”。
+     * 这样 actionbar 才能显示成“按下 U 键”或“按下 1 键”，而不是“按下双重人格切换键键”。</p>
+     */
+    private static final Map<UUID, String> SWITCH_KEY_LABELS = new HashMap<>();
 
     private DualPersonalityManager() {
     }
@@ -269,9 +280,19 @@ public final class DualPersonalityManager {
         }
 
         if (!pair.initialMessageSent) {
-            sendInitialRoleMessages(active, dormant, pair);
-            pair.initialMessageSent = true;
-            component.sync();
+            /*
+             * 开局身份提示不再和词条/阵营的开局 actionbar 同步发送。
+             * 先让它自己空转 2 秒，再发出“你当前为谁、当前人格状态是什么”的提示，
+             * 这样开局时信息不会挤成一团。
+             */
+            if (pair.initialMessageDelayTicks > 0) {
+                pair.initialMessageDelayTicks--;
+            }
+            if (pair.initialMessageDelayTicks <= 0) {
+                sendInitialRoleMessages(active, dormant, pair);
+                pair.initialMessageSent = true;
+                component.sync();
+            }
         }
 
         pair.switchTicks--;
@@ -282,6 +303,23 @@ public final class DualPersonalityManager {
         } else if (pair.switchTicks % 20 == 0) {
             // 客户端只需要秒级刷新，没必要每 tick 同步完整世界组件。
             component.sync();
+        }
+    }
+
+    public static void updateSwitchKeyLabel(UUID playerUuid, String keyLabel) {
+        if (playerUuid == null) {
+            return;
+        }
+
+        /*
+         * 这里存的不是语言文件里的“按钮名称”，而是客户端当前绑定的实际显示文本。
+         * 客户端会在按键改动时重新同步，所以这个缓存既能显示当前按键，也能在服务器端独立发 actionbar 时直接复用。
+         */
+        String sanitized = keyLabel == null ? "" : keyLabel.trim();
+        if (sanitized.isEmpty()) {
+            SWITCH_KEY_LABELS.remove(playerUuid);
+        } else {
+            SWITCH_KEY_LABELS.put(playerUuid, sanitized);
         }
     }
 
@@ -508,6 +546,7 @@ public final class DualPersonalityManager {
 
     private static void handleDisconnect(ServerPlayer player) {
         // Fabric 的断线事件比 tick 更早发现玩家离开，可以更快地修正相机/控制权。
+        SWITCH_KEY_LABELS.remove(player.getUUID());
         DualPersonalityComponent component = DualPersonalityComponent.KEY.get(player.level());
         DualPersonalityComponent.PairState pair = component.getPair(player.getUUID());
         if (pair == null || pair.doubleActive) {
@@ -585,6 +624,14 @@ public final class DualPersonalityManager {
         ));
     }
 
+    private static Component getSwitchKeyLabelText(ServerPlayer player) {
+        String keyLabel = player == null ? null : SWITCH_KEY_LABELS.get(player.getUUID());
+        if (keyLabel == null || keyLabel.isBlank()) {
+            keyLabel = "U";
+        }
+        return Component.literal(keyLabel);
+    }
+
     private static void sendCountdownWarnings(ServerPlayer active, ServerPlayer dormant, int ticksLeft) {
         int secondsLeft = ticksLeft / 20;
         if (ticksLeft == 30 * 20 || ticksLeft == 15 * 20 || ticksLeft == 8 * 20) {
@@ -593,13 +640,13 @@ public final class DualPersonalityManager {
                     "message.stupid_express.dual_personality.switch_countdown",
                     secondsLeft,
                     Component.translatable("text.stupid_express.dual_personality.can"),
-                    Component.translatable("key.stupid_express.dual_personality_switch")
+                    getSwitchKeyLabelText(active)
             ));
             sendActionbar(dormant, Component.translatable(
                     "message.stupid_express.dual_personality.switch_countdown",
                     secondsLeft,
                     Component.translatable("text.stupid_express.dual_personality.cannot"),
-                    Component.translatable("key.stupid_express.dual_personality_switch")
+                    getSwitchKeyLabelText(dormant)
             ));
         } else if (ticksLeft == 3 * 20) {
             sendActionbar(active, Component.translatable("message.stupid_express.dual_personality.switch_soon"));
@@ -615,7 +662,7 @@ public final class DualPersonalityManager {
                 "message.stupid_express.dual_personality.switched",
                 Component.translatable(active ? "text.stupid_express.dual_personality.active" : "text.stupid_express.dual_personality.dormant"),
                 Component.translatable(active ? "text.stupid_express.dual_personality.can" : "text.stupid_express.dual_personality.cannot"),
-                Component.translatable("key.stupid_express.dual_personality_switch")
+                getSwitchKeyLabelText(player)
         ));
     }
 
@@ -632,6 +679,7 @@ public final class DualPersonalityManager {
         DualPersonalityComponent component = DualPersonalityComponent.KEY.get(level);
         if (component.getPairs().isEmpty()) {
             FORCE_TIMEOUT_DEATHS.clear();
+            SWITCH_KEY_LABELS.clear();
             return;
         }
 
@@ -647,6 +695,7 @@ public final class DualPersonalityManager {
         }
         component.clear();
         FORCE_TIMEOUT_DEATHS.clear();
+        SWITCH_KEY_LABELS.clear();
     }
 
     public static boolean isActiveRound(net.minecraft.world.level.Level level) {

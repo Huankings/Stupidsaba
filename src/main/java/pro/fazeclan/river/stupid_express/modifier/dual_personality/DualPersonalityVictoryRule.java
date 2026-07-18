@@ -8,7 +8,9 @@ import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.constants.SEModifiers;
 import pro.fazeclan.river.stupid_express.victory.StupidExpressVictoryUtil;
 
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 双重人格词条的独立胜利 / 共胜 / 保活规则。
@@ -45,6 +47,7 @@ public final class DualPersonalityVictoryRule {
             if (remainingDualPersonalities.isEmpty()) {
                 return VictoryApi.VictoryResult.pass();
             }
+            List<UUID> allDualPersonalityUuids = modifierComponent.getAllWithModifier(SEModifiers.DUAL_PERSONALITY);
 
             /*
              * 用户确认过的独立胜利条件：
@@ -52,10 +55,10 @@ public final class DualPersonalityVictoryRule {
              * 这里不要求他们属于同一对，也不要求只剩一个人；多个双重人格可以一起显示在右侧独立胜利阵营。
              */
             if (remainingPlayers.size() == remainingDualPersonalities.size()) {
-                return StupidExpressVictoryUtil.customWin(
+                return StupidExpressVictoryUtil.customWinUuids(
                         SEModifiers.DUAL_PERSONALITY.identifier(),
                         SEModifiers.DUAL_PERSONALITY.color(),
-                        remainingDualPersonalities
+                        collectIndependentWinnerUuids(remainingDualPersonalities, dualPersonalityComponent, allDualPersonalityUuids)
                 );
             }
 
@@ -113,5 +116,51 @@ public final class DualPersonalityVictoryRule {
 
             return VictoryApi.VictoryResult.pass();
         });
+    }
+
+    private static List<UUID> collectIndependentWinnerUuids(
+            List<ServerPlayer> remainingDualPersonalities,
+            DualPersonalityComponent dualPersonalityComponent,
+            List<UUID> allDualPersonalityUuids
+    ) {
+        /*
+         * 这里是本次修复的核心：
+         *
+         * remainingDualPersonalities 只代表“现在还活着，并且把游戏带到双重人格独胜的人”；
+         * 但结算页右侧的“双重人格胜利阵营”应该代表“这组双重人格阵营的成员”。
+         * 双活阶段允许其中一方被杀死、另一方继续战斗并达成独胜；如果这里只把存活者写进 CustomVictory，
+         * Wathe 渲染时就会认为死亡的一方不是 winnerGroup 成员，于是把他/她分到左侧“其他”。
+         *
+         * 所以这里优先从 DualPersonalityComponent.PairState 里拿完整 main/sub UUID：
+         * 1. 存活的一方负责触发胜利；
+         * 2. main/sub 两个 UUID 一起写入 Wathe 的 winnerUuids；
+         * 3. 死亡的一方仍然会在右侧胜利阵营显示，只是 RoundEndData.wasDead 会让头像带红叉。
+         */
+        LinkedHashSet<UUID> winnerUuids = new LinkedHashSet<>();
+        boolean foundExplicitPair = false;
+        for (ServerPlayer player : remainingDualPersonalities) {
+            UUID playerUuid = player.getUUID();
+            DualPersonalityComponent.PairState pair = dualPersonalityComponent.getPair(playerUuid);
+            if (pair == null) {
+                winnerUuids.add(playerUuid);
+                continue;
+            }
+
+            foundExplicitPair = true;
+            winnerUuids.add(pair.main);
+            winnerUuids.add(pair.sub);
+        }
+
+        /*
+         * 极端兜底：如果旧存档、调试命令或未来改动导致 PairState 丢失，
+         * 但 Harpy 的词条组件里仍然保存着本局拥有 DUAL_PERSONALITY 的 UUID，
+         * 就把这些 UUID 也并入胜利阵营。这样至少能保证“拥有同一词条的人”不会因为缺少 pair 状态
+         * 被误分到“其他”。正常流程下 foundExplicitPair=true，本分支不会扩大到无关的其它 pair。
+         */
+        if (!foundExplicitPair && allDualPersonalityUuids.size() > winnerUuids.size()) {
+            winnerUuids.addAll(allDualPersonalityUuids);
+        }
+
+        return List.copyOf(winnerUuids);
     }
 }
