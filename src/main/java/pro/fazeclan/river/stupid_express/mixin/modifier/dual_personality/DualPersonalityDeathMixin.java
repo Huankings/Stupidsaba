@@ -57,5 +57,14 @@ public class DualPersonalityDeathMixin {
         if (killer instanceof ServerPlayer serverKiller && GameConstants.DeathReasons.KNIFE.equals(deathReason)) {
             DualPersonalityManager.onSuccessfulKill(serverKiller, victim, deathReason);
         }
+
+        /*
+         * 休眠人格被定时炸弹等延迟伤害击中时，Wathe 的死亡流程仍会走到结尾，
+         * 并在末尾把 victim 加进死者语音组。双重人格稍后会继续把该玩家维持成
+         * “旁观但玩法存活”的休眠人格，所以这里在死亡流程完全结束后只修正语音频道。
+         */
+        if (victim instanceof ServerPlayer serverVictim) {
+            DualPersonalityManager.restoreDormantVoiceChannelAfterDeath(serverVictim);
+        }
     }
 }

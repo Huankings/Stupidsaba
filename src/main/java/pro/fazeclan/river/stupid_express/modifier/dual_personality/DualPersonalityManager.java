@@ -2,6 +2,7 @@ package pro.fazeclan.river.stupid_express.modifier.dual_personality;
 
 import dev.doctor4t.wathe.api.PlayerLifeStateApi;
 import dev.doctor4t.wathe.cca.GameWorldComponent;
+import dev.doctor4t.wathe.compat.TrainVoicePlugin;
 import dev.doctor4t.wathe.game.GameFunctions;
 import dev.doctor4t.wathe.index.WatheItems;
 import dev.doctor4t.wathe.record.GameRecordManager;
@@ -147,6 +148,28 @@ public final class DualPersonalityManager {
 
         enterDoubleActive(victim.serverLevel(), component, pair, victim);
         return true;
+    }
+
+    public static void restoreDormantVoiceChannelAfterDeath(ServerPlayer victim) {
+        if (victim == null || !isActiveRound(victim.level())) {
+            return;
+        }
+
+        DualPersonalityComponent.PairState pair = DualPersonalityComponent.KEY.get(victim.level()).getPair(victim.getUUID());
+        if (pair == null || !pair.isDormant(victim.getUUID())) {
+            return;
+        }
+
+        /*
+         * 普通轮换阶段的休眠人格是“玩法上仍存活的旁观相机”，不是 Wathe 意义上的死者。
+         * 但定时炸弹、精神崩溃、跌出列车这类延迟/环境死亡会先通过 Wathe 的 killPlayer，
+         * Wathe 在流程末尾无条件把 victim 塞进 Simple Voice Chat 的死者语音组。
+         *
+         * 这里只撤销这个语音组副作用：尸体、回放、炸弹清理、金币奖励仍然保留原流程结果；
+         * 下一次双重人格 tick 会继续把该玩家维持成带 aliveOverride 的休眠人格。
+         * 这样休眠人格仍按双重人格规则被隔离和转发语音，不会误进入 Wathe 死亡频道。
+         */
+        TrainVoicePlugin.resetPlayer(victim.getUUID());
     }
 
     public static void onSuccessfulKill(ServerPlayer killer, Entity victim, ResourceLocation deathReason) {
