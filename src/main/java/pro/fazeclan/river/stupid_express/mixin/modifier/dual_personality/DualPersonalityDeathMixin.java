@@ -16,6 +16,36 @@ public class DualPersonalityDeathMixin {
 
     @Inject(
             method = "killPlayer(Lnet/minecraft/world/entity/player/Player;ZLnet/minecraft/world/entity/player/Player;Lnet/minecraft/resources/ResourceLocation;)V",
+            at = @At("HEAD"),
+            cancellable = true
+    )
+    private static void stupidexpress$keepDormantPersonalityGameplayAlive(
+            Player victim,
+            boolean spawnBody,
+            Player killer,
+            ResourceLocation deathReason,
+            CallbackInfo ci
+    ) {
+        /*
+         * 休眠人格靠 PlayerLifeStateApi 的 aliveOverride 被 Wathe 视为“仍在局内”，
+         * 所以手雷、静音手雷、狙击枪等范围/贯穿武器会把旁观中的休眠人格也扫进 killPlayer。
+         *
+         * 这里必须在 Wathe 真正处理死亡之前取消：
+         * 1. 不生成尸体和死亡回放；
+         * 2. 不给攻击者发击杀金币/任务收益；
+         * 3. 不让 Simple Voice Chat 把休眠人格放进死者频道；
+         * 4. 不消耗其它职业护盾或 Wathe 的精神护甲。
+         *
+         * 双活已经稳定开始后不会继续保命；Manager 只额外吞掉启动同一 tick 内、
+         * 来自旧范围/贯穿目标快照的残留击杀，保证刚被解离出的休眠人格能真正落地参与双活。
+         */
+        if (victim instanceof ServerPlayer serverVictim && DualPersonalityManager.tryProtectDormantFatalDeath(serverVictim)) {
+            ci.cancel();
+        }
+    }
+
+    @Inject(
+            method = "killPlayer(Lnet/minecraft/world/entity/player/Player;ZLnet/minecraft/world/entity/player/Player;Lnet/minecraft/resources/ResourceLocation;)V",
             at = @At(
                     value = "INVOKE",
                     target = "Ldev/doctor4t/wathe/api/PlayerLifeStateApi;clearAliveOverride(Lnet/minecraft/world/entity/player/Player;)V"
@@ -59,9 +89,9 @@ public class DualPersonalityDeathMixin {
         }
 
         /*
-         * 休眠人格被定时炸弹等延迟伤害击中时，Wathe 的死亡流程仍会走到结尾，
-         * 并在末尾把 victim 加进死者语音组。双重人格稍后会继续把该玩家维持成
-         * “旁观但玩法存活”的休眠人格，所以这里在死亡流程完全结束后只修正语音频道。
+         * 普通轮换阶段的休眠人格死亡现在会在 HEAD 被取消。
+         * 这里保留一个兜底：如果未来某个兼容 mixin 绕过了前置取消、仍让休眠人格走完 Wathe 死亡流程，
+         * 至少在 RETURN 处把 Simple Voice Chat 的死者频道副作用撤掉，避免语音隔离继续错位。
          */
         if (victim instanceof ServerPlayer serverVictim) {
             DualPersonalityManager.restoreDormantVoiceChannelAfterDeath(serverVictim);

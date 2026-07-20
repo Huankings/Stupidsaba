@@ -72,6 +72,18 @@ public final class DualPersonalityManager {
      * 防止超时死亡再次被拦截成新的双活，形成死循环。
      */
     private static final Set<UUID> FORCE_TIMEOUT_DEATHS = new HashSet<>();
+    /*
+     * 双活启动瞬间的极短保护名单。
+     *
+     * 范围/贯穿武器通常会先收集一批“当前仍算存活”的目标，再逐个调用 Wathe 的 killPlayer。
+     * 休眠人格因为 PlayerLifeStateApi 的 aliveOverride 会被算进这批目标；如果活跃人格先被处理并开启双活，
+     * 同一次手雷/狙击贯穿循环里随后轮到原休眠人格时，组件状态已经变成 doubleActive，普通“休眠保护”
+     * 就不会再生效，结果会表现成刚解离就立刻死亡。
+     *
+     * 这个集合只用于吞掉“触发双活同一 tick 里残留的那次旧伤害”，在 tickServer 开头清空；
+     * 它不是双活阶段的持续免死。双活真正开始后，下一 tick 起两个人格仍会按正常玩家被伤害和击杀。
+     */
+    private static final Set<UUID> DISSOCIATION_GRACE_PLAYERS = new HashSet<>();
     /**
      * 客户端同步上来的“人格切换键显示文本”。
      *
@@ -150,6 +162,45 @@ public final class DualPersonalityManager {
         return true;
     }
 
+    public static boolean tryProtectDormantFatalDeath(ServerPlayer victim) {
+        /*
+         * 这个方法在 Wathe killPlayer 的 HEAD 处调用，比 AllowPlayerDeath、护甲、尸体和回放都更早。
+         *
+         * 普通轮换阶段的休眠人格虽然是旁观模式，但它通过 PlayerLifeStateApi 被 Wathe 判定为“玩法存活”，
+         * 因此手雷、静音手雷、狙击枪这类按 isPlayerAliveAndSurvival 扫目标的武器会把休眠人格也纳入击杀列表。
+         * 休眠人格在双活启动前不应该成为真正死亡对象：这里直接取消这次 killPlayer，并重新压回
+         * “特殊存活旁观 + 跟随活跃人格视角”的状态，避免生成尸体、死亡回放、杀手金币或死者语音组副作用。
+         */
+        if (victim == null || FORCE_TIMEOUT_DEATHS.contains(victim.getUUID()) || !isActiveRound(victim.level())) {
+            return false;
+        }
+
+        DualPersonalityComponent component = DualPersonalityComponent.KEY.get(victim.level());
+        DualPersonalityComponent.PairState pair = component.getPair(victim.getUUID());
+        if (pair == null) {
+            return false;
+        }
+
+        if (pair.isDormant(victim.getUUID())) {
+            keepDormantAlive(victim, pair);
+            return true;
+        }
+
+        if (pair.doubleActive && DISSOCIATION_GRACE_PLAYERS.remove(victim.getUUID())) {
+            /*
+             * 这里只处理“刚刚被活跃人格的致命伤害解离出来、但仍在同一批范围/贯穿武器循环里被继续结算”的旧伤害。
+             * 例如手雷循环先处理活跃人格并开启双活，随后又处理原休眠人格；这次后续 killPlayer 其实来自双活前
+             * 已经选中的目标快照，不能让它把刚被解离出来的人格秒杀。名单移除后不会继续保护，保证双活阶段
+             * 新发生的刀、枪、爆炸、环境死亡都能按 Wathe 原流程正常杀死玩家。
+             */
+            ensureActive(victim);
+            removeRevolversFromInnocent(victim);
+            return true;
+        }
+
+        return false;
+    }
+
     public static void restoreDormantVoiceChannelAfterDeath(ServerPlayer victim) {
         if (victim == null || !isActiveRound(victim.level())) {
             return;
@@ -162,12 +213,10 @@ public final class DualPersonalityManager {
 
         /*
          * 普通轮换阶段的休眠人格是“玩法上仍存活的旁观相机”，不是 Wathe 意义上的死者。
-         * 但定时炸弹、精神崩溃、跌出列车这类延迟/环境死亡会先通过 Wathe 的 killPlayer，
-         * Wathe 在流程末尾无条件把 victim 塞进 Simple Voice Chat 的死者语音组。
+         * 现在常规 killPlayer 会在 HEAD 被 tryProtectDormantFatalDeath 取消，不再产生尸体/回放/金币等死亡副作用。
          *
-         * 这里只撤销这个语音组副作用：尸体、回放、炸弹清理、金币奖励仍然保留原流程结果；
-         * 下一次双重人格 tick 会继续把该玩家维持成带 aliveOverride 的休眠人格。
-         * 这样休眠人格仍按双重人格规则被隔离和转发语音，不会误进入 Wathe 死亡频道。
+         * 这里仅作为兼容兜底：如果未来某个 mixin 改写了调用顺序，让休眠人格仍然走到 Wathe 死亡流程末尾，
+         * 至少先撤销 Simple Voice Chat 的死者频道副作用，避免休眠人格继续错进死亡语音组。
          */
         TrainVoicePlugin.resetPlayer(victim.getUUID());
     }
@@ -244,6 +293,7 @@ public final class DualPersonalityManager {
     }
 
     private static void tickServer(MinecraftServer server) {
+        DISSOCIATION_GRACE_PLAYERS.clear();
         for (ServerLevel level : server.getAllLevels()) {
             tickLevel(level);
         }
@@ -431,11 +481,13 @@ public final class DualPersonalityManager {
             DualPersonalityComponent.PairState pair,
             ServerPlayer trigger
     ) {
+        UUID oldDormant = pair.dormant;
         // 致命伤害触发解离：普通轮换停止，两个人格同时获得行动权和双活倒计时。
         pair.doubleActive = true;
         pair.paused = false;
         pair.pauseReason = DualPersonalityComponent.PauseReason.NONE;
         pair.doubleActiveTicks = DOUBLE_ACTIVE_BASE_TICKS;
+        DISSOCIATION_GRACE_PLAYERS.add(oldDormant);
 
         ServerPlayer main = level.getServer().getPlayerList().getPlayer(pair.main);
         ServerPlayer sub = level.getServer().getPlayerList().getPlayer(pair.sub);
@@ -512,6 +564,30 @@ public final class DualPersonalityManager {
         }
         dormant.setCamera(active);
         dormant.teleportTo(active.getX(), active.getY(), active.getZ());
+    }
+
+    private static void keepDormantAlive(ServerPlayer dormant, DualPersonalityComponent.PairState pair) {
+        ServerPlayer active = dormant.server.getPlayerList().getPlayer(pair.active);
+        if (active != null) {
+            ensureDormant(dormant, active);
+        } else {
+            /*
+             * 极端时序下活跃人格可能刚掉线、但 tick/断线回调还没来得及把控制权交给另一方。
+             * 这时仍然先保住休眠人格的 aliveOverride，并暂时把相机放回自己；随后正常 tick 会进入
+             * handleActiveOffline，把在线的一方提为活跃人格或暂停轮换。
+             */
+            if (dormant.gameMode.getGameModeForPlayer() != GameType.SPECTATOR || !PlayerLifeStateApi.hasAliveOverride(dormant)) {
+                PlayerLifeStateApi.changeGameModeAsGameplayAlive(dormant, GameType.SPECTATOR);
+            }
+            dormant.setCamera(dormant);
+        }
+
+        if (dormant.getHealth() <= 0.0F) {
+            // 某些扩展可能先把原版血量扣到 0 再委托 Wathe killPlayer；取消死亡后要避免客户端残留倒地状态。
+            dormant.setHealth(1.0F);
+        }
+        DualPersonalityActionGuard.maintainDormantLock(dormant);
+        TrainVoicePlugin.resetPlayer(dormant.getUUID());
     }
 
     private static void handleDormantOffline(
