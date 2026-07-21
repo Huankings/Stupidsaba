@@ -16,11 +16,6 @@ public class StupidExpressConfig extends Config {
     public RolesSection rolesSection = new RolesSection();
     public static class RolesSection extends ConfigSection {
 
-        public NecromancerSection necromancerSection = new NecromancerSection();
-        public static class NecromancerSection extends ConfigSection {
-            public boolean necromancerHasShop = false;
-        }
-
         public ArsonistSection arsonistSection = new ArsonistSection();
         public static class ArsonistSection extends ConfigSection {
             public boolean arsonistKeepsGameGoing = false;

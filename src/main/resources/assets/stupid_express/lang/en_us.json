@@ -42,12 +42,6 @@
   "guidebook.role.title.stupid_express:thief": "The Pickpocket",
   "guidebook.role.description.stupid_express:thief": "A neutral killer whose goal is to be the last one standing. Steal to survive. With an empty hand, press your §eUse Item key§r (default RMB) on players to steal a random item from their inventory. Each successful steal triggers a §e1 minute and 30 second cooldown§r. If there are no items to steal, the attempt goes on cooldown for half that time.\n\nSteal a §eRevolver§r, §eKnife§r, or §eGrenade§r to gain the power to execute others.\n\nInstinct highlights both players and items, potentially marking important items. So choose wisely. Empty pockets leave you vulnerable.",
 
-  "announcement.goals.stupid_express.necromancer": "Bring back the dead to have them do your bidding!",
-  "announcement.role.stupid_express.necromancer": "Necromancer!",
-  "hud.stupid_express.necromancer.possible_revive": "Interact to revive this player as a killer!",
-  "hud.stupid_express.necromancer.no_possible_revive": "One of your killer cohorts must die before you revive!",
-  "hud.stupid_express.necromancer.cooldown": "You must wait %ss before attempting this.",
-
   "announcement.goals.stupid_express.convener": "Gather the living and make them wear the dead!",
   "announcement.role.stupid_express.convener": "Convener!",
   "announcement.win.stupid_express.convener": "The Convener Wins!",
@@ -63,17 +57,10 @@
   "death_reason.stupid_express.convener_counter_kill": "counter shield",
   "replay.death.stupid_express.convener_counter_kill.killed": "%s was killed by %s's counter shield",
 
-  "announcement.goals.stupid_express.avaricious": "Be near victims and get rich!",
-  "announcement.role.stupid_express.avaricious" : "Avaricious!",
-  "hud.stupid_express.avaricious.payout_timer": "Payout in: %ss",
-  "hud.stupid_express.avaricious.expected_payout": "Expected payout: %s coins",
-
   "replay.global.stupid_express.amnesiac_role_stolen": "%s stole %s's role",
   "replay.global.stupid_express.arsonist_doused": "%s doused %s in oil",
   "replay.global.stupid_express.arsonist_lighter_cooldown_started": "%s's lighter entered cooldown",
   "replay.global.stupid_express.arsonist_lighter_cooldown_finished": "%s's lighter cooldown finished",
-  "replay.global.stupid_express.avaricious_stole_coins": "%s stole %s coins in total",
-  "replay.global.stupid_express.necromancer_revived": "%s revived %s",
   "replay.global.stupid_express.thief_attempt": "%s tried to steal from %s",
   "replay.global.stupid_express.thief_success": "%s successfully stole %s's %s",
   "replay.global.stupid_express.thief_fail": "%s failed to steal from %s",
@@ -126,9 +113,6 @@
   "death_reason.stupid_express.failed_initiation": "had failed initiation.",
 
   "stupid_express.config.rolesSection": "Roles",
-  "stupid_express.config.rolesSection.necromancerSection": "Necromancer",
-  "stupid_express.config.rolesSection.necromancerSection.necromancerHasShop": "Necromancer Has a Shop",
-  "stupid_express.config.rolesSection.necromancerSection.necromancerHasShop.desc": "If true, the Necromancer will have a shop alongside its abilities.",
   "stupid_express.config.rolesSection.arsonistSection": "Arsonist",
   "stupid_express.config.rolesSection.arsonistSection.arsonistKeepsGameGoing": "Arsonist Keeps The Game Going",
   "stupid_express.config.rolesSection.arsonistSection.arsonistKeepsGameGoing.desc": "If true, the Arsonist will not just count towards the neutral roles and keep the game going until they're the last standing or dead.",

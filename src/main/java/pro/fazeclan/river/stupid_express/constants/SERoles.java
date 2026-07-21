@@ -21,7 +21,6 @@ import pro.fazeclan.river.stupid_express.role.amnesiac.RoleSelectionHandler;
 import pro.fazeclan.river.stupid_express.role.arsonist.ArsonistItemGivingHandler;
 import pro.fazeclan.river.stupid_express.role.arsonist.OilDousingHandler;
 import pro.fazeclan.river.stupid_express.role.arsonist.cca.DousedPlayerComponent;
-import pro.fazeclan.river.stupid_express.role.avaricious.AvariciousGoldHandler;
 import pro.fazeclan.river.stupid_express.role.convener.ConvenerSummonHandler;
 import pro.fazeclan.river.stupid_express.role.convener.ConvenerDeathProtectionHandler;
 import pro.fazeclan.river.stupid_express.role.convener.ConvenerWinHelper;
@@ -30,7 +29,6 @@ import pro.fazeclan.river.stupid_express.role.convener.cca.ConvenerMomentumCompo
 import pro.fazeclan.river.stupid_express.role.convener.cca.ConvenerPlayerComponent;
 import pro.fazeclan.river.stupid_express.role.convener.packet.ConvenerMorphC2SPacket;
 import pro.fazeclan.river.stupid_express.role.initiate.InitiateShopHandler;
-import pro.fazeclan.river.stupid_express.role.necromancer.RevivalSelectionHandler;
 import pro.fazeclan.river.stupid_express.role.thief.ThiefItemTracker;
 import pro.fazeclan.river.stupid_express.role.thief.packet.ThiefTakeItemC2SPacket;
 import pro.fazeclan.river.stupid_express.record.StupidExpressReplay;
@@ -58,26 +56,6 @@ public class SERoles {
             0xfc9526,
             false,
             false,
-            Role.MoodType.FAKE,
-            -1,
-            true
-    ));
-    //扒手(杀手)
-    public static Role AVARICIOUS = registerRole(new Role(
-            StupidExpress.id("avaricious"),
-            0x8f00ff,
-            false,
-            true,
-            Role.MoodType.FAKE,
-            -1,
-            true
-    ));
-    //死灵法师(杀手)
-    public static Role NECROMANCER = registerRole(new Role(
-            StupidExpress.id("necromancer"),
-            0x9457ff,
-            false,
-            true,
             Role.MoodType.FAKE,
             -1,
             true
@@ -120,21 +98,6 @@ public class SERoles {
          * 商品列表仍由 InitiateShopHandler 按职业分类维护；Wathe ShopApi 负责实际渲染与购买流程。
          */
         ShopApi.registerRoleShop(INITIATE, SEShops.provider(InitiateShopHandler::getShopEntries));
-        /*
-         * 死灵法师是否拥有杀手商店由配置控制。
-         * 旧实现用客户端 mixin 取消 LimitedInventoryScreen.init；Wathe 商店流程改为 ShopApi 后，
-         * 继续 mixin 屏幕初始化会因为注入点变化而崩溃。这里改为公共商店修改器：
-         * 客户端渲染和服务端购买都会看到同一份“空商店”，不会出现只隐藏按钮但服务端仍可买的问题。
-         */
-        ShopApi.registerShopModifier(
-                StupidExpress.id("necromancer_no_shop"),
-                ShopApi.DEFAULT_PRIORITY,
-                (context, entries) -> {
-                    if (context.role() == NECROMANCER && !StupidExpress.CONFIG.rolesSection.necromancerSection.necromancerHasShop) {
-                        entries.clear();
-                    }
-                }
-        );
         registerEconomyApi();
 
         /// AMNESIAC
@@ -154,9 +117,7 @@ public class SERoles {
             component.sync();
         });
 
-        /// NECROMANCER
-
-        RevivalSelectionHandler.init();
+        /// INITIATE
 
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             var playerList = server.getPlayerList().getPlayers();
@@ -168,19 +129,11 @@ public class SERoles {
             var killerRoleCount = (int) Math.floor((float) GameFunctions.getReadyPlayerCount(level) / (float) gameWorldComponent.getKillerDividend());
 
             if (killerRoleCount > 1) {
-                Harpymodloader.setRoleMaximum(NECROMANCER, 1);
-                Harpymodloader.setRoleMaximum(AVARICIOUS, 1);
                 Harpymodloader.setRoleMaximum(INITIATE, 1); // setting the other initiate will be my job
             } else {
-                Harpymodloader.setRoleMaximum(NECROMANCER, 0);
-                Harpymodloader.setRoleMaximum(AVARICIOUS, 0);
                 Harpymodloader.setRoleMaximum(INITIATE, 0);
             }
         });
-
-        /// AVARICIOUS
-
-        AvariciousGoldHandler.onGameStart();
 
         /// THIEF
         Harpymodloader.setRoleMaximum(THIEF, 1);
@@ -257,19 +210,6 @@ public class SERoles {
                 StupidExpress.id("initiate_task_income"),
                 TaskCompletionApi.DEFAULT_PRIORITY,
                 context -> context.role() == INITIATE ? 50 : 0
-        );
-
-        /*
-         * 扒手拥有杀手商店能力，所以按 Wathe 旧逻辑会自动吃到普通被动收入。
-         * 但它的设计金币来源是“附近玩家结算”，这里用 DENY 关闭通用被动收入，
-         * 保留自己的特殊结算逻辑。
-         */
-        EconomyApi.registerPassiveIncomeRule(
-                StupidExpress.id("avaricious_no_default_passive_income"),
-                EconomyApi.DEFAULT_PRIORITY,
-                context -> context.role() == AVARICIOUS
-                        ? EconomyApi.PassiveIncomeDecision.DENY
-                        : EconomyApi.PassiveIncomeDecision.PASS
         );
 
         /*

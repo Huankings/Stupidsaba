@@ -68,25 +68,6 @@ public final class StupidExpressReplayFormatters {
     }
 
     @Nullable
-    public static Component formatAvariciousStoleCoins(GameRecordEvent event, GameRecordManager.MatchRecord match, ServerLevel world) {
-        Component actor = actorText(event, match);
-        if (actor == null) {
-            return null;
-        }
-        return Component.translatable("replay.global.stupid_express.avaricious_stole_coins", actor, event.data().getInt("amount"));
-    }
-
-    @Nullable
-    public static Component formatNecromancerRevived(GameRecordEvent event, GameRecordManager.MatchRecord match, ServerLevel world) {
-        Component actor = actorText(event, match);
-        Component revived = playerFromKey(event, match, "revived_player");
-        if (actor == null || revived == null) {
-            return null;
-        }
-        return Component.translatable("replay.global.stupid_express.necromancer_revived", actor, revived);
-    }
-
-    @Nullable
     public static Component formatThiefAttempt(GameRecordEvent event, GameRecordManager.MatchRecord match, ServerLevel world) {
         Component actor = actorText(event, match);
         Component target = playerFromKey(event, match, "target_player");

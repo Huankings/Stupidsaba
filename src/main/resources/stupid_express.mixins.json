@@ -12,13 +12,11 @@
     "modifier.lovers.ForcedLoversAssignMixin",
     "role.RoundStateResetMixin",
     "role.ForceNeutralRoleFixMixin",
-    "role.avaricious.AvariciousGoldPayout",
     "role.convener.ItemCooldownInstanceAccessor",
     "role.convener.ItemCooldownsAccessor",
     "role.convener.ConvenerResetMixin",
     "role.initiate.InitiateAssignMixin",
     "role.initiate.InitiateKillMixin",
-    "role.necromancer.NecromancerStatsMixin",
     "role.thief.ThiefTrackKillPlayerMixin",
     "role.thief.ThiefTrackShopMixin"
   ],

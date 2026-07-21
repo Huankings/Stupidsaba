@@ -10,11 +10,9 @@ import pro.fazeclan.river.stupid_express.cca.AbilityCooldownComponent;
 import pro.fazeclan.river.stupid_express.modifier.dual_personality.DualPersonalityComponent;
 import pro.fazeclan.river.stupid_express.modifier.lovers.LoversPairComponent;
 import pro.fazeclan.river.stupid_express.role.arsonist.cca.DousedPlayerComponent;
-import pro.fazeclan.river.stupid_express.role.avaricious.cca.AvariciousPayoutComponent;
 import pro.fazeclan.river.stupid_express.role.convener.cca.ConvenerDisguiseComponent;
 import pro.fazeclan.river.stupid_express.role.convener.cca.ConvenerMomentumComponent;
 import pro.fazeclan.river.stupid_express.role.convener.cca.ConvenerPlayerComponent;
-import pro.fazeclan.river.stupid_express.role.necromancer.cca.NecromancerComponent;
 
 public class SEComponents implements EntityComponentInitializer, WorldComponentInitializer {
 
@@ -41,8 +39,6 @@ public class SEComponents implements EntityComponentInitializer, WorldComponentI
 
     @Override
     public void registerWorldComponentFactories(WorldComponentFactoryRegistry registry) {
-        registry.register(AvariciousPayoutComponent.KEY, AvariciousPayoutComponent::new);
-        registry.register(NecromancerComponent.KEY, NecromancerComponent::new);
         registry.register(LoversPairComponent.KEY, LoversPairComponent::new);
         // 双重人格配对和倒计时是“整局共享状态”，所以注册为世界组件，而不是玩家组件。
         registry.register(DualPersonalityComponent.KEY, DualPersonalityComponent::new);

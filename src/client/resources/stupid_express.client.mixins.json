@@ -10,11 +10,9 @@
     "modifier.lovers.LoversHudMixin",
     "role.amnesiac.AmnesiacHudMixin",
     "role.arsonist.ArsonistHudMixin",
-    "role.avaricious.AvariciousHudMixin",
     "role.convener.ConvenerHudMixin",
     "role.convener.ConvenerInventoryMixin",
     "role.convener.ConvenerMovementSpeedMixin",
-    "role.necromancer.NecromancerHudMixin",
     "role.thief.ThiefCooldownHudMixin",
     "role.thief.ThiefCrosshairRendererMixin",
     "role.thief.ThiefTakeItemMixin"

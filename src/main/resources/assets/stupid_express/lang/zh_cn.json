@@ -42,12 +42,6 @@
   "guidebook.role.title.stupid_express:thief": "小偷",
   "guidebook.role.description.stupid_express:thief": "一个中立杀手，目标是成为最后的幸存者。偷窃以求生存。空手时，按§e交互键§r（默认右键）对玩家进行交互，从其物品栏中窃取一件随机物品。每次成功偷窃会触发§e1分30秒冷却§r。如果没有物品可偷，每次尝试仍会触发一半时间的冷却。\n\n窃取§e左轮手枪§r、§e匕首§r或§e手榴弹§r即可获得处决他人的力量。\n\n本能会高亮显示玩家和物品，可能标记出重要物品。所以请明智选择。空手会使你没有反击手段。",
 
-  "announcement.goals.stupid_express.necromancer": "复活死者，让他们为你效力",
-  "announcement.role.stupid_express.necromancer": "死灵法师",
-  "hud.stupid_express.necromancer.possible_revive": "与其互动可将此玩家复活为杀手",
-  "hud.stupid_express.necromancer.no_possible_revive": "在使用能力之前，你的一名同伴必须先死亡",
-  "hud.stupid_express.necromancer.cooldown": "你必须等待 %s 秒后才能尝试",
-
   "announcement.goals.stupid_express.convener": "召集活人，让他们蒙上死者的面孔！",
   "announcement.role.stupid_express.convener": "召集者",
   "announcement.win.stupid_express.convener": "召集者胜利",
@@ -65,17 +59,10 @@
   "death_reason.stupid_express.convener_counter_kill": "反伤护盾",
   "replay.death.stupid_express.convener_counter_kill.killed": "%s 被 %s 的反伤护盾杀死",
 
-  "announcement.goals.stupid_express.avaricious": "接近受害者以获取财富",
-  "announcement.role.stupid_express.avaricious": "扒手",
-  "hud.stupid_express.avaricious.payout_timer": "偷取倒计时 %s 秒",
-  "hud.stupid_express.avaricious.expected_payout": "预计可偷取 %s 金币",
-
   "replay.global.stupid_express.amnesiac_role_stolen": "%s 摸取了 %s 的身份",
   "replay.global.stupid_express.arsonist_doused": "%s 给 %s 浇上了汽油",
   "replay.global.stupid_express.arsonist_lighter_cooldown_started": "%s 的打火机已进入冷却",
   "replay.global.stupid_express.arsonist_lighter_cooldown_finished": "%s 的打火机冷却完毕",
-  "replay.global.stupid_express.avaricious_stole_coins": "%s 偷取了共 %s 金币",
-  "replay.global.stupid_express.necromancer_revived": "%s 复活了 %s",
   "replay.global.stupid_express.thief_attempt": "%s 尝试偷取 %s 的东西",
   "replay.global.stupid_express.thief_success": "%s 成功偷取了 %s 的 %s",
   "replay.global.stupid_express.thief_fail": "%s 偷取 %s 的行动失败",
@@ -128,9 +115,6 @@
   "death_reason.stupid_express.failed_initiation": "考核失败",
 
   "stupid_express.config.rolesSection": "角色身份",
-  "stupid_express.config.rolesSection.necromancerSection": "死灵法师",
-  "stupid_express.config.rolesSection.necromancerSection.necromancerHasShop": "死灵法师杀手商店",
-  "stupid_express.config.rolesSection.necromancerSection.necromancerHasShop.desc": "如果此选项为开启状态，死灵法师除了拥有能力以外还拥有一个杀手商店",
   "stupid_express.config.rolesSection.arsonistSection": "纵火犯",
   "stupid_express.config.rolesSection.arsonistSection.arsonistKeepsGameGoing": "让这熊熊烈火烧毁一切",
   "stupid_express.config.rolesSection.arsonistSection.arsonistKeepsGameGoing.desc": "如果此选项为开启状态，纵火犯不仅会作为中立角色存在，还会让游戏持续进行，直到成为最后一个幸存者或死亡为止",

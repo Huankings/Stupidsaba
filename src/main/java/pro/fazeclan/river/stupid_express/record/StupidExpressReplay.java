@@ -32,8 +32,6 @@ public final class StupidExpressReplay {
     public static final net.minecraft.resources.ResourceLocation ARSONIST_DOUSED_EVENT = StupidExpress.id("arsonist_doused");
     public static final net.minecraft.resources.ResourceLocation ARSONIST_LIGHTER_COOLDOWN_STARTED_EVENT = StupidExpress.id("arsonist_lighter_cooldown_started");
     public static final net.minecraft.resources.ResourceLocation ARSONIST_LIGHTER_COOLDOWN_FINISHED_EVENT = StupidExpress.id("arsonist_lighter_cooldown_finished");
-    public static final net.minecraft.resources.ResourceLocation AVARICIOUS_STOLE_COINS_EVENT = StupidExpress.id("avaricious_stole_coins");
-    public static final net.minecraft.resources.ResourceLocation NECROMANCER_REVIVED_EVENT = StupidExpress.id("necromancer_revived");
     public static final net.minecraft.resources.ResourceLocation THIEF_ATTEMPT_EVENT = StupidExpress.id("thief_attempt");
     public static final net.minecraft.resources.ResourceLocation THIEF_SUCCESS_EVENT = StupidExpress.id("thief_success");
     public static final net.minecraft.resources.ResourceLocation THIEF_FAIL_EVENT = StupidExpress.id("thief_fail");
@@ -75,8 +73,6 @@ public final class StupidExpressReplay {
         ReplayRegistry.registerGlobalEventFormatter(ARSONIST_DOUSED_EVENT, StupidExpressReplayFormatters::formatArsonistDoused);
         ReplayRegistry.registerGlobalEventFormatter(ARSONIST_LIGHTER_COOLDOWN_STARTED_EVENT, StupidExpressReplayFormatters::formatArsonistLighterCooldownStarted);
         ReplayRegistry.registerGlobalEventFormatter(ARSONIST_LIGHTER_COOLDOWN_FINISHED_EVENT, StupidExpressReplayFormatters::formatArsonistLighterCooldownFinished);
-        ReplayRegistry.registerGlobalEventFormatter(AVARICIOUS_STOLE_COINS_EVENT, StupidExpressReplayFormatters::formatAvariciousStoleCoins);
-        ReplayRegistry.registerGlobalEventFormatter(NECROMANCER_REVIVED_EVENT, StupidExpressReplayFormatters::formatNecromancerRevived);
         ReplayRegistry.registerGlobalEventFormatter(THIEF_ATTEMPT_EVENT, StupidExpressReplayFormatters::formatThiefAttempt);
         ReplayRegistry.registerGlobalEventFormatter(THIEF_SUCCESS_EVENT, StupidExpressReplayFormatters::formatThiefSuccess);
         ReplayRegistry.registerGlobalEventFormatter(THIEF_FAIL_EVENT, StupidExpressReplayFormatters::formatThiefFail);
