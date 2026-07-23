@@ -40,7 +40,7 @@ public class SERoles {
 
     @Getter
     private static final HashMap<String, Role> ROLES = new HashMap<>();
-    //失忆患者(中立)
+    //失忆患者(普通中立)
     public static Role AMNESIAC = registerRole(new Role(
             StupidExpress.id("amnesiac"),
             0x9baae8,
@@ -50,7 +50,7 @@ public class SERoles {
             WatheRoles.CIVILIAN.getMaxSprintTime(),
             false
     ));
-    //纵火犯(中立)
+    //纵火犯(独立中立)
     public static Role ARSONIST = registerRole(new Role(
             StupidExpress.id("arsonist"),
             0xfc9526,
@@ -60,7 +60,7 @@ public class SERoles {
             -1,
             true
     ));
-    //初学者(中立)
+    //初学者(普通中立)
     public static Role INITIATE = registerRole(new Role(
             StupidExpress.id("initiate"),
             0xffd154,
@@ -70,7 +70,7 @@ public class SERoles {
             WatheRoles.CIVILIAN.getMaxSprintTime(),
             true
     ));
-    //小偷(中立)
+    //小偷(独立中立)
     public static Role THIEF = registerRole(new Role(
         StupidExpress.id("thief"), 
         0x7a3002, 
@@ -80,7 +80,7 @@ public class SERoles {
         -1, 
         true
     ));
-    //召集者(中立)
+    //召集者(独立中立)
     public static Role CONVENER = registerRole(new Role(
             StupidExpress.id("convener"),
             0x5734e5,
