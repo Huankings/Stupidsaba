@@ -19,9 +19,8 @@ import pro.fazeclan.river.stupid_express.modifier.dual_personality.DualPersonali
 /**
  * StupidExpress 的语音聊天插件入口。
  *
- * <p>当前承接两条语音规则：
- * 1. 召集者召集后的限时变形活人彼此听不到彼此；
- * 2. 双重人格普通轮换阶段，两个人格之间额外补发无距离衰减的静态语音。</p>
+ * <p>当前承接双重人格普通轮换阶段的语音规则：
+ * 两个人格之间额外补发无距离衰减的静态语音。</p>
  *
  * <p>后续如果还要加新的角色语音限制，也可以继续在这里统一追加。</p>
  */
@@ -40,15 +39,8 @@ public class StupidExpressVoiceChatPlugin implements VoicechatPlugin {
     /**
      * 过滤即将发送给单个接收者的语音包。
      *
-     * <p>这里不再走“麦克风包到服务端就整包取消”的旧方案，
-     * 因为那样会直接导致被召集活人完全说不出话。
-     *
-     * <p>现在改为只在“发送者和接收者都处于被召集后的限时变形”时，
-     * 取消这一对玩家之间的语音转发。
-     * 这样可以实现：
-     * 1. 被召集活人仍然可以正常开麦；
-     * 2. 其他同样被召集的活人听不到；
-     * 3. 召集者、死亡玩家、局外玩家依旧可以听到。</p>
+     * <p>双重人格的休眠语音隔离统一由 StupidExpressCommunicationManager 判定，
+     * 这样 VoiceChat 的不同声音包类型都能走同一套服务端规则。</p>
      */
     private void handleSoundPacket(SoundPacketEvent<?> event) {
         ServerPlayer sender = resolveServerPlayer(event.getSenderConnection());

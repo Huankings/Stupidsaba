@@ -8,11 +8,6 @@
     "modifier.dual_personality.DualPersonalityHudMixin",
     "modifier.dual_personality.DualPersonalityMovementSpeedMixin",
     "modifier.lovers.LoversHudMixin",
-    "role.amnesiac.AmnesiacHudMixin",
-    "role.arsonist.ArsonistHudMixin",
-    "role.convener.ConvenerHudMixin",
-    "role.convener.ConvenerInventoryMixin",
-    "role.convener.ConvenerMovementSpeedMixin",
     "role.thief.ThiefCooldownHudMixin",
     "role.thief.ThiefCrosshairRendererMixin",
     "role.thief.ThiefTakeItemMixin"

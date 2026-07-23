@@ -9,7 +9,6 @@ import net.minecraft.world.item.Item;
 import org.agmas.noellesroles.AbilityPlayerComponent;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.cca.AbilityCooldownComponent;
-import pro.fazeclan.river.stupid_express.constants.SEItems;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -65,7 +64,7 @@ public final class DualPersonalityActionGuard {
     }
 
     private static void applyStupidExpressAbilityCooldown(ServerPlayer player) {
-        // 本模组自己的能力冷却组件可以直接访问，保证小偷/召集者等能力不会被休眠人格触发。
+        // 本模组自己的能力冷却组件可以直接访问，保证小偷等能力不会被休眠人格触发。
         AbilityCooldownComponent component = AbilityCooldownComponent.KEY.get(player);
         if (component.getCooldown() < DORMANT_LOCK_TICKS) {
             component.setCooldown(DORMANT_LOCK_TICKS);
@@ -97,9 +96,10 @@ public final class DualPersonalityActionGuard {
         items.add(WatheItems.GRENADE);
         items.add(WatheItems.PSYCHO_MODE);
         items.add(WatheItems.BLACKOUT);
-        items.add(SEItems.JERRY_CAN);
-        items.add(SEItems.LIGHTER);
 
+        // 纵火犯物品已经迁移到 NoellesRoles，通过注册表软取，避免继续硬依赖本模组已删除的物品常量。
+        addRegisteredItem(items, "noellesroles", "jerry_can");
+        addRegisteredItem(items, "noellesroles", "lighter");
         addRegisteredItem(items, "noellesroles", "throwing_axe");
         addRegisteredItem(items, "noellesroles", "robber_pistol");
         addRegisteredItem(items, "noellesroles", "timed_bomb");

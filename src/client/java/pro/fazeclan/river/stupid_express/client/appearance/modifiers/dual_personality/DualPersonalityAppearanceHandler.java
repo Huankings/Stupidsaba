@@ -6,7 +6,7 @@ import net.minecraft.network.chat.Component;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.client.appearance.StupidExpressAppearancePriorities;
 import pro.fazeclan.river.stupid_express.client.modifier.dual_personality.DualPersonalityClientState;
-import pro.fazeclan.river.stupid_express.client.role.convener.ConvenerDisguiseResolver;
+import pro.fazeclan.river.stupid_express.client.modifier.dual_personality.DualPersonalityAppearanceResolver;
 
 import java.util.UUID;
 
@@ -32,7 +32,7 @@ public final class DualPersonalityAppearanceHandler {
                      */
                     return appearanceSource == null
                             ? null
-                            : ConvenerDisguiseResolver.resolveSkinForUuid(player, appearanceSource);
+                            : DualPersonalityAppearanceResolver.resolveSkinForUuid(player, appearanceSource);
                 }
         );
 
@@ -49,14 +49,14 @@ public final class DualPersonalityAppearanceHandler {
                      * 副人格显示为主人格时，准心名字也要解析到主人格；
                      * 缓存暂时拿不到名字时保留原名，避免 HUD 空白或崩溃。
                      */
-                    Component name = ConvenerDisguiseResolver.resolveDisguiseName(target, appearanceSource);
+                    Component name = DualPersonalityAppearanceResolver.resolveDisguiseName(target, appearanceSource);
                     return name != null ? name : originalName;
                 }
         );
 
         RoleNameHudApi.registerHudVisibility(
                 StupidExpress.id("role_name/dual_personality/dormant_visibility"),
-                StupidExpressAppearancePriorities.CONVENER,
+                StupidExpressAppearancePriorities.DUAL_PERSONALITY_DORMANT_VISIBILITY,
                 player -> {
                     /*
                      * 休眠人格的相机被挂到活跃人格身上时，不应该通过准心 HUD 读到额外身份信息。

@@ -7,15 +7,17 @@ package pro.fazeclan.river.stupid_express.client.appearance;
  */
 public final class StupidExpressAppearancePriorities {
     /**
-     * 召集者召集尸体后的限时变形高于普通主动变形与双重人格。
-     * NoellesRoles 灵术师本地出窍使用更高优先级，因此仍然可以盖过这里。
-     */
-    public static final int CONVENER = 1000;
-
-    /**
-     * 双重人格只是身份词条外观兜底，低于召集者和其它主动变形。
+     * 双重人格只是身份词条外观兜底，低于任何主动外观覆盖。
      */
     public static final int DUAL_PERSONALITY = -100;
+
+    /**
+     * 双重人格休眠态的准心名字隐藏优先级。
+     *
+     * <p>这里保留一个更高的值，是为了确保“当前相机挂在休眠人格身上”时，
+     * HudVisibility 的隐藏结果能压过低优先级的名字/身份展示。</p>
+     */
+    public static final int DUAL_PERSONALITY_DORMANT_VISIBILITY = 1000;
 
     private StupidExpressAppearancePriorities() {
     }

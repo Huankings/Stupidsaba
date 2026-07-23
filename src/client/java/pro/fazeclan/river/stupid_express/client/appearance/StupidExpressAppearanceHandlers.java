@@ -1,7 +1,6 @@
 package pro.fazeclan.river.stupid_express.client.appearance;
 
 import pro.fazeclan.river.stupid_express.client.appearance.modifiers.dual_personality.DualPersonalityAppearanceHandler;
-import pro.fazeclan.river.stupid_express.client.appearance.roles.convener.ConvenerAppearanceHandler;
 
 /**
  * StupidExpress 接入 Wathe 玩家外观 / 准心名字 API 的总入口。
@@ -14,7 +13,6 @@ public final class StupidExpressAppearanceHandlers {
     }
 
     public static void register() {
-        ConvenerAppearanceHandler.register();
         DualPersonalityAppearanceHandler.register();
     }
 }

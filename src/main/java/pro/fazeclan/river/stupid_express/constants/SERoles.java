@@ -7,31 +7,15 @@ import dev.doctor4t.wathe.api.shop.ShopApi;
 import dev.doctor4t.wathe.api.task.TaskCompletionApi;
 import dev.doctor4t.wathe.cca.GameWorldComponent;
 import dev.doctor4t.wathe.game.GameFunctions;
-import dev.doctor4t.wathe.index.WatheItems;
-import dev.doctor4t.wathe.record.GameRecordManager;
 import lombok.Getter;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.nbt.CompoundTag;
 import org.agmas.harpymodloader.Harpymodloader;
 import org.agmas.harpymodloader.events.ModdedRoleAssigned;
-import org.agmas.harpymodloader.events.ResetPlayerEvent;
 import pro.fazeclan.river.stupid_express.StupidExpress;
 import pro.fazeclan.river.stupid_express.cca.AbilityCooldownComponent;
-import pro.fazeclan.river.stupid_express.role.amnesiac.RoleSelectionHandler;
-import pro.fazeclan.river.stupid_express.role.arsonist.ArsonistItemGivingHandler;
-import pro.fazeclan.river.stupid_express.role.arsonist.OilDousingHandler;
-import pro.fazeclan.river.stupid_express.role.arsonist.cca.DousedPlayerComponent;
-import pro.fazeclan.river.stupid_express.role.convener.ConvenerSummonHandler;
-import pro.fazeclan.river.stupid_express.role.convener.ConvenerDeathProtectionHandler;
-import pro.fazeclan.river.stupid_express.role.convener.ConvenerWinHelper;
-import pro.fazeclan.river.stupid_express.role.convener.cca.ConvenerDisguiseComponent;
-import pro.fazeclan.river.stupid_express.role.convener.cca.ConvenerMomentumComponent;
-import pro.fazeclan.river.stupid_express.role.convener.cca.ConvenerPlayerComponent;
-import pro.fazeclan.river.stupid_express.role.convener.packet.ConvenerMorphC2SPacket;
 import pro.fazeclan.river.stupid_express.role.initiate.InitiateShopHandler;
 import pro.fazeclan.river.stupid_express.role.thief.ThiefItemTracker;
 import pro.fazeclan.river.stupid_express.role.thief.packet.ThiefTakeItemC2SPacket;
-import pro.fazeclan.river.stupid_express.record.StupidExpressReplay;
 import pro.fazeclan.river.stupid_express.shop.SEShops;
 
 import java.util.HashMap;
@@ -40,26 +24,6 @@ public class SERoles {
 
     @Getter
     private static final HashMap<String, Role> ROLES = new HashMap<>();
-    //失忆患者(普通中立)
-    public static Role AMNESIAC = registerRole(new Role(
-            StupidExpress.id("amnesiac"),
-            0x9baae8,
-            false,
-            false,
-            Role.MoodType.REAL,
-            WatheRoles.CIVILIAN.getMaxSprintTime(),
-            false
-    ));
-    //纵火犯(独立中立)
-    public static Role ARSONIST = registerRole(new Role(
-            StupidExpress.id("arsonist"),
-            0xfc9526,
-            false,
-            false,
-            Role.MoodType.FAKE,
-            -1,
-            true
-    ));
     //初学者(普通中立)
     public static Role INITIATE = registerRole(new Role(
             StupidExpress.id("initiate"),
@@ -80,16 +44,6 @@ public class SERoles {
         -1, 
         true
     ));
-    //召集者(独立中立)
-    public static Role CONVENER = registerRole(new Role(
-            StupidExpress.id("convener"),
-            0x5734e5,
-            false,
-            false,
-            Role.MoodType.FAKE,
-            -1,
-            true
-    ));
 
     public static void init() {
 
@@ -99,23 +53,6 @@ public class SERoles {
          */
         ShopApi.registerRoleShop(INITIATE, SEShops.provider(InitiateShopHandler::getShopEntries));
         registerEconomyApi();
-
-        /// AMNESIAC
-
-        Harpymodloader.setRoleMaximum(AMNESIAC, 1);
-        RoleSelectionHandler.init();
-
-        /// ARSONIST
-
-        Harpymodloader.setRoleMaximum(ARSONIST, 1);
-        OilDousingHandler.init();
-        ArsonistItemGivingHandler.init();
-
-        ResetPlayerEvent.EVENT.register(player -> {
-            var component = DousedPlayerComponent.KEY.get(player);
-            component.reset();
-            component.sync();
-        });
 
         /// INITIATE
 
@@ -147,52 +84,6 @@ public class SERoles {
 				component.sync();
 			}
 		});
-
-        /// CONVENER
-
-        Harpymodloader.setRoleMaximum(CONVENER, 1);
-        ConvenerSummonHandler.init();
-        ConvenerDeathProtectionHandler.init();
-        ConvenerMorphC2SPacket.register();
-
-        ModdedRoleAssigned.EVENT.register((player, role) -> {
-            if (!role.equals(CONVENER)) {
-                return;
-            }
-
-            // 召集者开局直接携带一把开锁器，
-            // 方便其像你要求的那样拥有更强的前期机动与开门能力。
-            player.addItem(WatheItems.LOCKPICK.getDefaultInstance());
-
-            // 召集者是整局状态型角色，因此在分配身份的瞬间就初始化目标次数、
-            // 已解锁头像列表以及当前伪装状态，避免旧数据残留到新对局。
-            ConvenerPlayerComponent convenerComponent = ConvenerPlayerComponent.KEY.get(player);
-            convenerComponent.initializeForRole();
-            convenerComponent.setRequiredSummons(ConvenerWinHelper.getRequiredSummons(player.level()));
-            convenerComponent.sync();
-
-            ConvenerDisguiseComponent disguiseComponent = ConvenerDisguiseComponent.KEY.get(player);
-            disguiseComponent.clearDisguise();
-
-            ConvenerMomentumComponent.KEY.get(player).reset();
-
-            AbilityCooldownComponent cooldownComponent = AbilityCooldownComponent.KEY.get(player);
-            cooldownComponent.setCooldown(0);
-            cooldownComponent.sync();
-        });
-
-        ServerTickEvents.END_SERVER_TICK.register(server -> {
-            for (var player : server.getPlayerList().getPlayers()) {
-                var gameWorldComponent = GameWorldComponent.KEY.get(player.level());
-                if (!gameWorldComponent.isRole(player, CONVENER)) {
-                    continue;
-                }
-
-                // 身份刚分配出来的那一小段时间里，参局人数可能还没完全稳定。
-                // 因此这里每 tick 兜底校正一次，直到组件里的目标值和本局真实人数一致为止。
-                ConvenerWinHelper.refreshRequiredSummons(player);
-            }
-        });
     }
 
     private static void registerEconomyApi() {
@@ -211,39 +102,6 @@ public class SERoles {
                 TaskCompletionApi.DEFAULT_PRIORITY,
                 context -> context.role() == INITIATE ? 50 : 0
         );
-
-        /*
-         * 召集者完成任务增加反伤护盾进度。
-         * 旧实现监听 TaskCompletePayload；现在直接监听任务完成 API，不再依赖网络同步包这个内部细节。
-         */
-        TaskCompletionApi.AFTER_TASK_COMPLETE.register(context -> {
-            if (!StupidExpress.CONFIG.rolesSection.convenerSection.convenerCounterShieldEnabled) {
-                return;
-            }
-            if (!context.gameWorld().isRunning()) {
-                return;
-            }
-            if (!GameFunctions.isPlayerAliveAndSurvival(context.player())) {
-                return;
-            }
-            if (context.role() != CONVENER) {
-                return;
-            }
-
-            ConvenerPlayerComponent convenerComponent = ConvenerPlayerComponent.KEY.get(context.player());
-            boolean gainedShield = convenerComponent.recordCompletedTask();
-            convenerComponent.sync();
-            if (gainedShield) {
-                CompoundTag extra = new CompoundTag();
-                extra.putInt("current_layers", convenerComponent.getCounterShieldLayers());
-                GameRecordManager.recordGlobalEvent(
-                        context.player().serverLevel(),
-                        StupidExpressReplay.CONVENER_COUNTER_SHIELD_GAINED_EVENT,
-                        context.player(),
-                        extra
-                );
-            }
-        });
     }
 
     public static Role registerRole(Role role) {

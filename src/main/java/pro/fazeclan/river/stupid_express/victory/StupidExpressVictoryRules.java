@@ -2,8 +2,6 @@ package pro.fazeclan.river.stupid_express.victory;
 
 import pro.fazeclan.river.stupid_express.modifier.dual_personality.DualPersonalityVictoryRule;
 import pro.fazeclan.river.stupid_express.modifier.lovers.LoversVictoryRule;
-import pro.fazeclan.river.stupid_express.role.arsonist.ArsonistVictoryRule;
-import pro.fazeclan.river.stupid_express.role.convener.ConvenerVictoryRule;
 import pro.fazeclan.river.stupid_express.role.thief.ThiefVictoryRule;
 
 /**
@@ -15,7 +13,7 @@ import pro.fazeclan.river.stupid_express.role.thief.ThiefVictoryRule;
  * 3. 最后 mixin 客户端结算文字和 didWin。
  *
  * <p>现在具体规则已经拆回各自分类：
- * modifier.lovers、modifier.dual_personality、role.arsonist、role.convener、role.thief。
+ * modifier.lovers、modifier.dual_personality、role.thief。
  * 本类只负责集中初始化，避免 StupidExpress 主类需要知道每个职业 / 词条的内部细节。</p>
  */
 public final class StupidExpressVictoryRules {
@@ -30,8 +28,6 @@ public final class StupidExpressVictoryRules {
          */
         LoversVictoryRule.init();
         DualPersonalityVictoryRule.init();
-        ArsonistVictoryRule.init();
-        ConvenerVictoryRule.init();
         ThiefVictoryRule.init();
     }
 }

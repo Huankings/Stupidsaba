@@ -9,10 +9,6 @@ import org.ladysnake.cca.api.v3.world.WorldComponentInitializer;
 import pro.fazeclan.river.stupid_express.cca.AbilityCooldownComponent;
 import pro.fazeclan.river.stupid_express.modifier.dual_personality.DualPersonalityComponent;
 import pro.fazeclan.river.stupid_express.modifier.lovers.LoversPairComponent;
-import pro.fazeclan.river.stupid_express.role.arsonist.cca.DousedPlayerComponent;
-import pro.fazeclan.river.stupid_express.role.convener.cca.ConvenerDisguiseComponent;
-import pro.fazeclan.river.stupid_express.role.convener.cca.ConvenerMomentumComponent;
-import pro.fazeclan.river.stupid_express.role.convener.cca.ConvenerPlayerComponent;
 
 public class SEComponents implements EntityComponentInitializer, WorldComponentInitializer {
 
@@ -20,21 +16,9 @@ public class SEComponents implements EntityComponentInitializer, WorldComponentI
 
     @Override
     public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
-        registry.beginRegistration(Player.class, DousedPlayerComponent.KEY)
-                .respawnStrategy(RespawnCopyStrategy.NEVER_COPY)
-                .end(DousedPlayerComponent::new);
         registry.beginRegistration(Player.class, AbilityCooldownComponent.KEY)
                 .respawnStrategy(RespawnCopyStrategy.NEVER_COPY)
                 .end(AbilityCooldownComponent::new);
-        registry.beginRegistration(Player.class, ConvenerPlayerComponent.KEY)
-                .respawnStrategy(RespawnCopyStrategy.NEVER_COPY)
-                .end(ConvenerPlayerComponent::new);
-        registry.beginRegistration(Player.class, ConvenerDisguiseComponent.KEY)
-                .respawnStrategy(RespawnCopyStrategy.NEVER_COPY)
-                .end(ConvenerDisguiseComponent::new);
-        registry.beginRegistration(Player.class, ConvenerMomentumComponent.KEY)
-                .respawnStrategy(RespawnCopyStrategy.NEVER_COPY)
-                .end(ConvenerMomentumComponent::new);
     }
 
     @Override
