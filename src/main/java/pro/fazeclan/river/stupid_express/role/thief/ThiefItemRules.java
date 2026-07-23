@@ -37,7 +37,7 @@ public class ThiefItemRules {
         List<ResourceLocation> list = new ArrayList<>();
         list.add(getId(WatheItems.REVOLVER));
         list.add(getId(WatheItems.KNIFE));
-        list.add(getId("kinswathe", "hunting_knife")); // Hunting Knife from Hunter role in kins wathe
+        list.add(getId("noellesroles", "hunting_knife")); // Hunting Knife from Hunter role in noellesroles
         list.add(getId("noellesroles", "throwing_axe"));//noellesroles throwing_axe
         list.add(getId("noellesroles", "robber_pistol"));
         return list;
@@ -63,13 +63,13 @@ public class ThiefItemRules {
         list.add(getId("noellesroles", "defense_vial"));
         list.add(getId("noellesroles", "delusion_vial"));
         list.add(getId("noellesroles", "role_mine"));
-        list.add(getId("kinswathe", "hunting_knife"));
-        list.add(getId("kinswathe", "dream_imprint"));
-        list.add(getId("kinswathe", "knockout_drug"));
-        list.add(getId("kinswathe", "poison_injector"));
-        list.add(getId("kinswathe", "blowgun"));
-        list.add(getId("kinswathe", "pill"));
-        list.add(getId("starryexpress", "tape"));
+        list.add(getId("noellesroles", "hunting_knife"));
+        list.add(getId("noellesroles", "dream_imprint"));
+        list.add(getId("noellesroles", "knockout_drug"));
+        list.add(getId("noellesroles", "poison_injector"));
+        list.add(getId("noellesroles", "blowgun"));
+        list.add(getId("noellesroles", "pill"));
+        list.add(getId("noellesroles", "tape"));
 
         return list;
     }
